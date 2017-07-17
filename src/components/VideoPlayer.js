@@ -2,6 +2,14 @@ import React from 'react';
 import YouTube from 'react-youtube';
 
 export default class VideoPlayer extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      videoID: '',
+      message: ''
+    }
+  }
+
   render() {
     const opts = {
       height: '390',
@@ -17,8 +25,12 @@ export default class VideoPlayer extends React.Component {
         <YouTube
           videoId={videoID}
           opts={opts}
-          onPause={this._onPause}
+          onReady={this._onReady.bind(this)}
+          onPause={this._onPause.bind(this)}
         />
+        <p>
+          {this.state.message}
+        </p>
       </div>
     );
   }
@@ -29,6 +41,17 @@ export default class VideoPlayer extends React.Component {
   }
   
   _onPause(event) {
-    console.log(event.target.getCurrentTime());
+    const { comments } = this.props;
+    const currentTime = event.target.getCurrentTime();
+
+    const strArray = comments.map(function(comment) {
+      const { startTime, endTime, message } = comment;
+
+      if (currentTime > startTime && currentTime < endTime){
+        return message;
+      }
+      return '';
+    });
+    this.setState({ message: strArray.join('\n') });
   }
 }
