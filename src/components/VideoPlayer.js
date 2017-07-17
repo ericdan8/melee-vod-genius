@@ -44,14 +44,9 @@ export default class VideoPlayer extends React.Component {
     const { comments } = this.props;
     const currentTime = event.target.getCurrentTime();
 
-    const strArray = comments.map(function(comment) {
-      const { startTime, endTime, message } = comment;
-
-      if (currentTime > startTime && currentTime < endTime){
-        return message;
-      }
-      return '';
-    });
+    const strArray = comments.map((comment) =>
+      currentTime > comment.startTime && currentTime < comment.endTime ? comment.message : ''
+    );
     this.setState({ message: strArray.join('\n') });
   }
 }
