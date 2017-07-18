@@ -8,6 +8,7 @@ export default class VideoPlayer extends React.Component {
       videoID: '',
       message: ''
     }
+    this.player = null;
     this.showCommentTimer = null;
     this.hideCommentTimer = null;
   }
@@ -38,38 +39,27 @@ export default class VideoPlayer extends React.Component {
     );
   }
 
-  _onStateChange(event) {
-    // state of '1' means the video is currently playing
-    if (event.data == 1) {
-        // setTimeout(function() {console.log("timeout"), 1000});
-        this._setShowCommentTimer(event);
-    }
-  }
-
   _onReady(event) {
     // access to player in all event handlers via event.target
-    event.target.pauseVideo();
+    this.player = event.target;
+    this.player.pauseVideo();
   }
   
   _onPause(event) {
     console.log('you paused the video good job');
   }
 
-  _onShowCommentTimer(comment, event) {
-    this._showComment(comment);
-    this._setHideCommentTimer(comment, event);
+  _onStateChange(event) {
+    // state of '1' means the video is currently playing
+    if (event.data == 1) {
+        // setTimeout(function() {console.log("timeout"), 1000});
+        this._setShowCommentTimer();
+    }
   }
 
-  _setHideCommentTimer(comment, event) {
-    const currentTime = event.target.getCurrentTime();
-
-    clearTimeout(this.hideCommentTimer);
-    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this), (comment.endTime - currentTime) * 1000);
-  }
-
-  _setShowCommentTimer(event) {
+  _setShowCommentTimer() {
     const { comments } = this.props;
-    const currentTime = event.target.getCurrentTime();
+    const currentTime = this.player.getCurrentTime();
     var nextComment;
     var i = 0;
 
@@ -88,16 +78,27 @@ export default class VideoPlayer extends React.Component {
     }
 
     if (nextComment) {
-      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, nextComment, event), (nextComment.startTime - currentTime) * 1000);
+      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, nextComment), (nextComment.startTime - currentTime) * 1000);
     }
   }
 
-  _showComment(comment) {
-    this.setState({ message: comment.message });
+  _setHideCommentTimer(comment) {
+    const currentTime = this.player.getCurrentTime();
+
+    clearTimeout(this.hideCommentTimer);
+    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this), (comment.endTime - currentTime) * 1000);
+  }
+
+  _onShowCommentTimer(comment) {
+    this._showComment(comment);
+    this._setHideCommentTimer(comment);
   }
 
   _onHideCommentTimer() {
     this.setState({ message: '' })
   }
 
+  _showComment(comment) {
+    this.setState({ message: comment.message });
+  }
 }
