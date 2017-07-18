@@ -38,20 +38,31 @@ export default class VideoPlayer extends React.Component {
     );
   }
 
-  _showComment(comment) {
-    this.setState({ message: comment.message });
+  _onStateChange(event) {
+    // state of '1' means the video is currently playing
+    if (event.data == 1) {
+        // setTimeout(function() {console.log("timeout"), 1000});
+        this._setShowCommentTimer(event);
+    }
   }
 
-  _onHideCommentTimer() {
-    this.setState({ message: '' })
+  _onReady(event) {
+    // access to player in all event handlers via event.target
+    event.target.pauseVideo();
+  }
+  
+  _onPause(event) {
+    console.log('you paused the video good job');
   }
 
-  _onShowCommentTimer(comment, currentTime) {
+  _onShowCommentTimer(comment, event) {
     this._showComment(comment);
-    this._setHideCommentTimer(comment, currentTime);
+    this._setHideCommentTimer(comment, event);
   }
 
-  _setHideCommentTimer(comment, currentTime) {
+  _setHideCommentTimer(comment, event) {
+    const currentTime = event.target.getCurrentTime();
+
     clearTimeout(this.hideCommentTimer);
     this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this), (comment.endTime - currentTime) * 1000);
   }
@@ -77,24 +88,16 @@ export default class VideoPlayer extends React.Component {
     }
 
     if (nextComment) {
-      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, nextComment, currentTime), (nextComment.startTime - currentTime) * 1000);
+      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, nextComment, event), (nextComment.startTime - currentTime) * 1000);
     }
   }
 
-  _onStateChange(event) {
-    // state of '1' means the video is currently playing
-    if (event.data == 1) {
-        // setTimeout(function() {console.log("timeout"), 1000});
-        this._setShowCommentTimer(event);
-    }
+  _showComment(comment) {
+    this.setState({ message: comment.message });
   }
 
-  _onReady(event) {
-    // access to player in all event handlers via event.target
-    event.target.pauseVideo();
+  _onHideCommentTimer() {
+    this.setState({ message: '' })
   }
-  
-  _onPause(event) {
-    console.log('you paused the video good job');
-  }
+
 }
