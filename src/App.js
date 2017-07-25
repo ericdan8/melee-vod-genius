@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import VideoPlayer from './components/VideoPlayer';
+import LinkedList from 'dbly-linked-list';
 import './App.css';
 
 class App extends Component {
@@ -8,19 +9,23 @@ class App extends Component {
     super();
     this.state = {
       videoID: '2g811Eo7K8U',
-      comments: [
-        {
-          message: "oops",
-          startTime: 2,
-          endTime: 3
-        },
-        {
-          message: "cat cat",
-          startTime: 4.5,
-          endTime: 7
-        }
-      ]
+      comments: new LinkedList()
     }
+    this.state.comments.insert({
+      message: 'oops',
+      startTime: 2,
+      endTime: 3
+    });
+    this.state.comments.insert({
+      message: 'cat cat',
+      startTime: 4.5,
+      endTime: 7
+    })
+    this.state.comments.insert({
+      message: 'interrupting',
+      startTime: 6,
+      endTime: 12
+    })
   }
 
   render() {

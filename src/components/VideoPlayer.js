@@ -1,5 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
+import './VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
   constructor() {
@@ -21,7 +22,7 @@ export default class VideoPlayer extends React.Component {
         autoplay: 1
       }
     };
-    const { videoID, comments } = this.props;
+    const { videoID } = this.props;
 
     return (
       <div className='Video-container'>
@@ -51,13 +52,14 @@ export default class VideoPlayer extends React.Component {
 
   _onStateChange(event) {
     // state of '1' means the video is currently playing
-    if (event.data == 1) {
+    // TODO: replace this gross number
+    if (event.data === 1) {
         // setTimeout(function() {console.log("timeout"), 1000});
-        this._setShowCommentTimer();
+        this._setShowCommentTimer(this.props.comments.getHeadNode());
     }
   }
 
-  _setShowCommentTimer() {
+  _setShowCommentTimer(_commentToShow) {
     const { comments } = this.props;
     const currentTime = this.player.getCurrentTime();
     var nextComment;
@@ -67,38 +69,28 @@ export default class VideoPlayer extends React.Component {
     if (this.showCommentTimer) {
       clearTimeout(this.showCommentTimer);
     }
-    // find the soonest comment
-    for (i; i < comments.length; i++) {
-      // if the comment has not already been shown and it's sooner than the current "soonest" comment
-      if (!nextComment || // case where nextComment hasn't been initialized
-        comments[i].startTime - currentTime > 0 && 
-        comments[i].startTime - currentTime < nextComment.startTime - currentTime) {
-        nextComment = comments[i];
-      }
-    }
 
-    if (nextComment) {
-      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, nextComment), (nextComment.startTime - currentTime) * 1000);
+    if (_commentToShow) {
+      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, _commentToShow), (_commentToShow.getData().startTime - currentTime) * 1000);
     }
   }
 
-  _setHideCommentTimer(comment) {
+  _onShowCommentTimer(_comment) {
     const currentTime = this.player.getCurrentTime();
 
+    // Show a comment
+    this.setState({ message: _comment.getData().message });
+    // Set a timer to remove the comment when it ends
     clearTimeout(this.hideCommentTimer);
-    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this), (comment.endTime - currentTime) * 1000);
-  }
+    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this), (_comment.getData().endTime - currentTime) * 1000);
 
-  _onShowCommentTimer(comment) {
-    this._showComment(comment);
-    this._setHideCommentTimer(comment);
+    // Set the timer for the next comment to show
+    if (_comment.hasNext()) {
+      this._setShowCommentTimer(_comment.next);
+    }
   }
 
   _onHideCommentTimer() {
     this.setState({ message: '' })
-  }
-
-  _showComment(comment) {
-    this.setState({ message: comment.message });
   }
 }
