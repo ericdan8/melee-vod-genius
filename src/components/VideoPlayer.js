@@ -7,7 +7,7 @@ export default class VideoPlayer extends React.Component {
     super();
     this.state = {
       videoID: '',
-      message: ''
+      shownComments: []
     }
     this.player = null;
     this.showCommentTimer = null;
@@ -34,7 +34,7 @@ export default class VideoPlayer extends React.Component {
           onStateChange={this._onStateChange.bind(this)}
         />
         <p>
-          {this.state.message}
+          {this._getCommentString()}
         </p>
       </div>
     );
@@ -50,6 +50,28 @@ export default class VideoPlayer extends React.Component {
     console.log('you paused the video good job');
   }
 
+  // _getComments(time) {
+  //   var comments = [];
+  //   var nextComment = this.props.comments.getHeadNode();
+  //   while (nextComment.getData().startTime < this.player.getCurrentTime()) {
+  //     if (nextComment.hasNext()){
+  //       nextComment = nextComment.next;
+  //     } else {
+  //       // no next comment found
+  //       return null;
+  //     }
+  //   }
+  // }
+
+  _getCommentString() {
+    var commentString = '';
+    var i = 0;
+    for (i; i < this.state.shownComments.length; i++) {
+      commentString = commentString + this.state.shownComments[i].getData().message + '\n';
+    }
+    return commentString;
+  }
+  
   _onStateChange(event) {
     // state of '1' means the video is currently playing
     // TODO: replace this gross number
@@ -77,12 +99,14 @@ export default class VideoPlayer extends React.Component {
 
   _onShowCommentTimer(_comment) {
     const currentTime = this.player.getCurrentTime();
+    var newComments = this.state.shownComments.slice();
 
-    // Show a comment
-    this.setState({ message: _comment.getData().message });
+    // Show the comment
+    newComments.push(_comment);
+    this.setState({ shownComments: newComments });
     // Set a timer to remove the comment when it ends
     clearTimeout(this.hideCommentTimer);
-    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this), (_comment.getData().endTime - currentTime) * 1000);
+    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this, _comment), (_comment.getData().endTime - currentTime) * 1000);
 
     // Set the timer for the next comment to show
     if (_comment.hasNext()) {
@@ -90,7 +114,10 @@ export default class VideoPlayer extends React.Component {
     }
   }
 
-  _onHideCommentTimer() {
-    this.setState({ message: '' })
+  _onHideCommentTimer(_comment) {
+    let newComments = this.state.shownComments.slice();
+
+    newComments.splice(newComments.indexOf(_comment), 1);
+    this.setState({ shownComments: newComments })
   }
 }
