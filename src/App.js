@@ -17,15 +17,20 @@ class App extends Component {
       endTime: 3
     });
     this.state.comments.insert({
+      message: 'overlap test',
+      startTime: 2,
+      endTime: 4
+    });
+    this.state.comments.insert({
       message: 'cat cat',
       startTime: 4.5,
       endTime: 7
-    })
+    });
     this.state.comments.insert({
       message: 'interrupting',
       startTime: 6,
       endTime: 12
-    })
+    });
   }
 
   render() {

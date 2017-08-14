@@ -1,5 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
+import { STATE } from './VideoPlayerTypes.js';
 import './VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
@@ -11,7 +12,7 @@ export default class VideoPlayer extends React.Component {
     }
     this.player = null;
     this.showCommentTimer = null;
-    this.hideCommentTimer = null;
+    this.hideCommentTimer = [];
   }
 
   render() {
@@ -29,9 +30,9 @@ export default class VideoPlayer extends React.Component {
         <YouTube
           videoId={videoID}
           opts={opts}
-          onReady={this._onReady.bind(this)}
-          onPause={this._onPause.bind(this)}
-          onStateChange={this._onStateChange.bind(this)}
+          onReady={this._onReady}
+          onPause={this._onPause}
+          onStateChange={this._onStateChange}
         />
         <p>
           {this._getCommentString()}
@@ -40,30 +41,17 @@ export default class VideoPlayer extends React.Component {
     );
   }
 
-  _onReady(event) {
+  _onReady = event => {
     // access to player in all event handlers via event.target
     this.player = event.target;
-    this.player.pauseVideo();
+    // this.player.pauseVideo();
   }
   
-  _onPause(event) {
+  _onPause = event => {
     console.log('you paused the video good job');
   }
 
-  // _getComments(time) {
-  //   var comments = [];
-  //   var nextComment = this.props.comments.getHeadNode();
-  //   while (nextComment.getData().startTime < this.player.getCurrentTime()) {
-  //     if (nextComment.hasNext()){
-  //       nextComment = nextComment.next;
-  //     } else {
-  //       // no next comment found
-  //       return null;
-  //     }
-  //   }
-  // }
-
-  _getCommentString() {
+  _getCommentString = () => {
     var commentString = '';
     var i = 0;
     for (i; i < this.state.shownComments.length; i++) {
@@ -72,20 +60,18 @@ export default class VideoPlayer extends React.Component {
     return commentString;
   }
   
-  _onStateChange(event) {
+  _onStateChange = event => {
     // state of '1' means the video is currently playing
     // TODO: replace this gross number
-    if (event.data === 1) {
+    if (event.data === STATE.PLAYING) {
         // setTimeout(function() {console.log("timeout"), 1000});
         this._setShowCommentTimer(this.props.comments.getHeadNode());
     }
   }
 
-  _setShowCommentTimer(_commentToShow) {
+  _setShowCommentTimer = _commentToShow => {
     const { comments } = this.props;
     const currentTime = this.player.getCurrentTime();
-    var nextComment;
-    var i = 0;
 
     // clear any existing timer
     if (this.showCommentTimer) {
@@ -97,27 +83,29 @@ export default class VideoPlayer extends React.Component {
     }
   }
 
-  _onShowCommentTimer(_comment) {
+  _onShowCommentTimer = _comment => {
     const currentTime = this.player.getCurrentTime();
-    var newComments = this.state.shownComments.slice();
+    let newComments = this.state.shownComments.slice();
+    let newHideTimer = null;
 
     // Show the comment
     newComments.push(_comment);
     this.setState({ shownComments: newComments });
+
     // Set a timer to remove the comment when it ends
-    clearTimeout(this.hideCommentTimer);
-    this.hideCommentTimer = setTimeout(this._onHideCommentTimer.bind(this, _comment), (_comment.getData().endTime - currentTime) * 1000);
+    newHideTimer = setTimeout(() => {
+      let newComments = this.state.shownComments.slice();
+      console.log(_comment);
+      console.log(newHideTimer);
+      newComments.splice(newComments.indexOf(_comment), 1);
+      this.setState({ shownComments: newComments })
+      this.hideCommentTimer.splice(this.hideCommentTimer.indexOf(newHideTimer, 1));
+    }, (_comment.getData().endTime - currentTime) * 1000);
+    this.hideCommentTimer.push(newHideTimer);
 
     // Set the timer for the next comment to show
     if (_comment.hasNext()) {
       this._setShowCommentTimer(_comment.next);
     }
-  }
-
-  _onHideCommentTimer(_comment) {
-    let newComments = this.state.shownComments.slice();
-
-    newComments.splice(newComments.indexOf(_comment), 1);
-    this.setState({ shownComments: newComments })
   }
 }
