@@ -1,6 +1,5 @@
 import React from 'react';
 import YouTube from 'react-youtube';
-import { STATE } from './VideoPlayerTypes.js';
 import './VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
@@ -61,10 +60,7 @@ export default class VideoPlayer extends React.Component {
   }
   
   _onStateChange = event => {
-    // state of '1' means the video is currently playing
-    // TODO: replace this gross number
-    if (event.data === STATE.PLAYING) {
-        // setTimeout(function() {console.log("timeout"), 1000});
+    if (event.data === YouTube.PlayerState.PLAYING) {
         this._setShowCommentTimer(this.props.comments.getHeadNode());
     }
   }
