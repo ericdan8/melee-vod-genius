@@ -34,20 +34,35 @@ export default class VideoPlayer extends React.Component {
           onPlay={this._onPlay}
           onStateChange={this._onStateChange}
         />
-        <p>
-          {this._getCommentString()}
-        </p>
+        <ul>
+          {this._getCommentList()}
+        </ul>
       </div>
     );
   }
 
-  _getNextCommentToShow = () => {
-    const currentTime = this.player.getCurrentTime();
+  _getCurrentlyShownComments = currentTime => {  
+    var comments = [];
+    var commentToCheck = this.props.comments.getHeadNode();
+
+    while (commentToCheck.startTime < currentTime && commentToCheck.hasNext()) {
+      if (commentToCheck.endTime > currentTime) {
+        comments.push(commentToCheck);
+      }
+      commentToCheck = commentToCheck.next;
+    }
+
+    return comments;
+  }
+
+  _getNextCommentToShow = currentTime => {
     let nextComment = this.props.comments.getHeadNode();
 
     while (nextComment.startTime < currentTime && nextComment.hasNext) {
       nextComment = nextComment.next;
     }
+
+    return nextComment;
   }
 
   _onReady = event => {
@@ -56,34 +71,43 @@ export default class VideoPlayer extends React.Component {
   }
 
   _onPlay = event => {
-    console.log('onplay called');
-    // set a timer for the next comment that should be shown
-    // show the comments that should be shown right now
+    let currentlyShownComments = this._getCurrentlyShownComments(event.target.getCurrentTime());
+    let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
+
+    this._clearComments();
+    this._clearTimers();
+    for (let i = 0; i < currentlyShownComments.length; i++) {
+      this._addComment(currentlyShownComments[i]);
+    }
+    this._setShowCommentTimer(nextComment);
   }
   
   _onPause = event => {
     console.log('you paused the video good job');
     let i = 0;
 
-    // Clear all existing timers
-    clearTimeout(this.showCommentTimer);
-    for (i; i < this.clearCommentTimers.length; i++) {
-      clearTimeout(this.clearCommentTimers[i]);
-    }
+    this._clearTimers();
   }
 
-  _getCommentString = () => {
-    var commentString = '';
-    let i = 0;
-    for (i; i < this.state.shownComments.length; i++) {
-      commentString = commentString + this.state.shownComments[i].getData().message + '\n';
-    }
-    return commentString;
-  }
+  _getCommentList = () => 
+    this.state.shownComments.map((comment) => 
+      <li>{comment.getData().message}</li>
+    )
   
   _onStateChange = event => {
-    if (event.data === YouTube.PlayerState.PLAYING) {
-        this._setShowCommentTimer(this.props.comments.getHeadNode());
+    // if (event.data === YouTube.PlayerState.PLAYING) {
+    //     this._setShowCommentTimer(this.props.comments.getHeadNode());
+    // }
+  }
+
+  _clearComments = () => {
+    this.setState({ shownComments: [] })
+  }
+
+  _clearTimers = () => {
+    clearTimeout(this.showCommentTimer);
+    for (let i = 0; i < this.clearCommentTimers.length; i++) {
+      clearTimeout(this.clearCommentTimers[i]);
     }
   }
 
