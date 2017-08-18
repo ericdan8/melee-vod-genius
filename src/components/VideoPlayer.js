@@ -88,7 +88,7 @@ export default class VideoPlayer extends React.Component {
   _getNextCommentToShow = time => {
     let nextComment = this.props.comments.getHeadNode();
 
-    while (nextComment.startTime < time && nextComment.hasNext) {
+    while (nextComment.getData().startTime < time && nextComment.hasNext) {
       nextComment = nextComment.next;
     }
 
