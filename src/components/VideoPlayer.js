@@ -70,7 +70,7 @@ export default class VideoPlayer extends React.Component {
 
   }
 
-  _getCommentsShownAtTime = (time = 0) => {  
+  _getCommentsShownAtTime = (time = this.player.getCurrentTime()) => {  
     var comments = [];
     var commentToCheck = this.props.comments.getHeadNode();
 
