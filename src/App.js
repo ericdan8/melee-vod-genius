@@ -24,7 +24,7 @@ class App extends Component {
     this.state.comments.insert({
       message: 'cat cat',
       startTime: 4.5,
-      endTime: 7
+      endTime: 9
     });
     this.state.comments.insert({
       message: 'interrupting',

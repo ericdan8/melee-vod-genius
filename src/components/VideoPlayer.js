@@ -47,14 +47,32 @@ export default class VideoPlayer extends React.Component {
   }
 
   _onPlay = event => {
-    let commentsToKeep = this._getCommentsShownAtTime(event.target.getCurrentTime());
-    let newComments = [];
+    let commentsAtNewTime = this._getCommentsShownAtTime(event.target.getCurrentTime());
+    let commentsToRemove = this.state.shownComments.filter(comment => !commentsAtNewTime.includes(comment));
+    let commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
     let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
 
-    newComments = this.state.shownComments.filter(comment => commentsToKeep.includes(comment));
+
+    console.log("Removing " + commentsToRemove.length);
+    console.log("Adding " + commentsToAdd.length);
+    for (let i = 0; i < commentsToRemove.length; i++) {
+      this._onHideCommentTimer(commentsToRemove[i]);
+    }
+
+    for (let i = 0; i < commentsToAdd.length; i++) {
+      this._addComment(commentsToAdd[i], this._getShownIndex(commentsToAdd[i]));
+    }
+
     this._clearTimers();
-    this.setState({ shownComments: newComments });
     this._setShowCommentTimer(nextComment);
+  }
+
+  _getShownIndex = __comment => {
+    var i = 0;
+    while (this.state.shownComments[i] && this.state.shownComments[i].getData().startTime < __comment.getData().startTime) {
+      i++;
+    }
+    return i;
   }
   
   _onPause = event => {
@@ -65,17 +83,13 @@ export default class VideoPlayer extends React.Component {
     this.state.shownComments.map((comment) => 
       <li>{comment.getData().message}</li>
     )
-  
-  _onStateChange = event => {
-
-  }
 
   _getCommentsShownAtTime = (time = this.player.getCurrentTime()) => {  
     var comments = [];
     var commentToCheck = this.props.comments.getHeadNode();
 
-    while (commentToCheck.startTime < time && commentToCheck.hasNext()) {
-      if (commentToCheck.endTime > time) {
+    while (commentToCheck.getData().startTime < time && commentToCheck.hasNext()) {
+      if (commentToCheck.getData().endTime > time) {
         comments.push(commentToCheck);
       }
       commentToCheck = commentToCheck.next;
@@ -93,6 +107,7 @@ export default class VideoPlayer extends React.Component {
 
     return nextComment;
   }
+  
   _clearComments = () => {
     this.setState({ shownComments: [] })
   }
@@ -105,7 +120,7 @@ export default class VideoPlayer extends React.Component {
     this.clearCommentTimers = [];
   }
 
-  _setShowCommentTimer = (_commentToShow = this.props.comments.getHeadNode()) => {
+  _setShowCommentTimer = (__commentToShow = this.props.comments.getHeadNode()) => {
     const currentTime = this.player.getCurrentTime();
 
     // clear any existing timer
@@ -114,20 +129,49 @@ export default class VideoPlayer extends React.Component {
       this.showCommentTimer = null;
     }
 
-    if (_commentToShow) {
-      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, _commentToShow), 
-      (_commentToShow.getData().startTime - currentTime) * (1000 / this.player.getPlaybackRate()));
+    if (__commentToShow) {
+      this.showCommentTimer = setTimeout(this._onShowCommentTimer.bind(this, __commentToShow), 
+      (__commentToShow.getData().startTime - currentTime) * (1000 / this.player.getPlaybackRate()));
+    }
+  }
+  
+  _onShowCommentTimer = __comment => {
+    this._addComment(__comment);
+    // Set the timer for the next comment to show
+    if (__comment.hasNext()) {
+      this._setShowCommentTimer(__comment.next);
     }
   }
 
-  _removeHideCommentTimer = _comment => {
-    if (!_comment) {
+  _setHideCommentTimer = __comment => {
+    let currentTime = this.player.getCurrentTime();
+    let newHideTimer = null;
+
+    if (!__comment) {
+      // No comment provided
+      return;
+    }
+    
+    newHideTimer = setTimeout(this._onHideCommentTimer.bind(this, __comment), (__comment.getData().endTime - currentTime) * (1000 / this.player.getPlaybackRate()));
+    this.clearCommentTimers.push({ comment: __comment, timerID: newHideTimer});
+  }
+
+  _onHideCommentTimer = __comment => {
+      let newComments = this.state.shownComments.slice();
+
+      newComments.splice(newComments.indexOf(__comment), 1);
+      this.setState({ shownComments: newComments });
+      this._removeHideCommentTimer(__comment);
+  }
+
+  _removeHideCommentTimer = __comment => {
+    if (!__comment) {
       // No comment provided
       return true;
     }
     for (var i = 0; i < this.clearCommentTimers.length; i++) {
       // TODO: update this check when comment IDs are added
-      if (this.clearCommentTimers[i].comment.getData().message === _comment.getData().message) {
+      if (this.clearCommentTimers[i].comment.getData().message === __comment.getData().message) {
         this.clearCommentTimers.splice(i, 1);
         return false;
       }
@@ -135,41 +179,19 @@ export default class VideoPlayer extends React.Component {
     return true;
   }
 
-  _setHideCommentTimer = _comment => {
-    let currentTime = this.player.getCurrentTime();
-    let newHideTimer = null;
-
-    if (!_comment) {
-      // No comment provided
-      return;
-    }
-    
-    newHideTimer = setTimeout(() => {
-      let newComments = this.state.shownComments.slice();
-
-      newComments.splice(newComments.indexOf(_comment), 1);
-      this.setState({ shownComments: newComments });
-      this._removeHideCommentTimer(_comment);
-    }, (_comment.getData().endTime - currentTime) * (1000 / this.player.getPlaybackRate()));
-    this.clearCommentTimers.push({ comment: _comment, timerID: newHideTimer});
-  }
-
-  _onShowCommentTimer = _comment => {
-    this._addComment(_comment);
-    // Set the timer for the next comment to show
-    if (_comment.hasNext()) {
-      this._setShowCommentTimer(_comment.next);
-    }
-  }
-
-  _addComment = _comment => {
+  _addComment = (__comment, __index = null) => {
     let newComments = this.state.shownComments.slice();
 
     // Show the comment
-    newComments.push(_comment);
+    if (__index === null) {
+      newComments.push(__comment);
+    } else { 
+      newComments.splice(__index, 0, __comment);
+    }
     this.setState({ shownComments: newComments });
 
     // Set a timer to remove the comment when it ends
-    this._setHideCommentTimer(_comment);
+    this._setHideCommentTimer(__comment);
   }
+  
 }
