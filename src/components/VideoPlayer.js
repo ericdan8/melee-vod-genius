@@ -47,14 +47,20 @@ export default class VideoPlayer extends React.Component {
   }
 
   _onPlay = event => {
+    console.log("currently shown: ");
+    console.log(this.state.shownComments);
     let commentsAtNewTime = this._getCommentsShownAtTime(event.target.getCurrentTime());
-    let commentsToRemove = this.state.shownComments.filter(comment => !commentsAtNewTime.includes(comment));
-    let commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
+    console.log("new comments: ");
+    console.log(commentsAtNewTime);
+    var commentsToRemove = this.state.shownComments.filter(comment => !commentsAtNewTime.includes(comment));
+    var commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
     let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
 
-
+    // maybe using var instead of let will make seeking work properly?
     console.log("Removing " + commentsToRemove.length);
+    console.log(commentsToRemove);
     console.log("Adding " + commentsToAdd.length);
+    console.log(commentsToAdd);
     for (let i = 0; i < commentsToRemove.length; i++) {
       this._onHideCommentTimer(commentsToRemove[i]);
     }
@@ -64,7 +70,9 @@ export default class VideoPlayer extends React.Component {
     }
 
     this._clearTimers();
-    this._setShowCommentTimer(nextComment);
+    if (nextComment) {
+      this._setShowCommentTimer(nextComment);
+    }
   }
 
   _getShownIndex = __comment => {
@@ -88,7 +96,7 @@ export default class VideoPlayer extends React.Component {
     var comments = [];
     var commentToCheck = this.props.comments.getHeadNode();
 
-    while (commentToCheck.getData().startTime < time && commentToCheck.hasNext()) {
+    while (commentToCheck && commentToCheck.getData().startTime < time) {
       if (commentToCheck.getData().endTime > time) {
         comments.push(commentToCheck);
       }
@@ -101,7 +109,7 @@ export default class VideoPlayer extends React.Component {
   _getNextCommentToShow = (time = 0) => {
     var nextComment = this.props.comments.getHeadNode();
 
-    while (nextComment.getData().startTime < time && nextComment.hasNext()) {
+    while (nextComment && nextComment.getData().startTime < time) {
       nextComment = nextComment.next;
     }
 
@@ -157,11 +165,11 @@ export default class VideoPlayer extends React.Component {
   }
 
   _onHideCommentTimer = __comment => {
-      let newComments = this.state.shownComments.slice();
+    let newComments = this.state.shownComments.slice();
 
-      newComments.splice(newComments.indexOf(__comment), 1);
-      this.setState({ shownComments: newComments });
-      this._removeHideCommentTimer(__comment);
+    newComments.splice(newComments.indexOf(__comment), 1);
+    this.setState({ shownComments: newComments });
+    this._removeHideCommentTimer(__comment);
   }
 
   _removeHideCommentTimer = __comment => {
