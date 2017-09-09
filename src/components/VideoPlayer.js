@@ -29,9 +29,9 @@ export default class VideoPlayer extends React.Component {
         <YouTube
           videoId={videoID}
           opts={opts}
-          onReady={this._onReady}
-          onPause={this._onPause}
-          onPlay={this._onPlay}
+          onReady={this._onReady.bind(this)}
+          onPause={this._onPause.bind(this)}
+          onPlay={this._onPlay.bind(this)}
           onStateChange={this._onStateChange}
         />
         <ul>
@@ -46,6 +46,12 @@ export default class VideoPlayer extends React.Component {
     this.player = event.target;
   }
 
+  _onStateChange = event => {
+    if (event.data) {
+      console.log(event.data);
+    }
+  }
+
   _onPlay = event => {
     console.log("currently shown: ");
     console.log(this.state.shownComments);
@@ -56,20 +62,23 @@ export default class VideoPlayer extends React.Component {
     var commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
     let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
 
-    // maybe using var instead of let will make seeking work properly?
     console.log("Removing " + commentsToRemove.length);
     console.log(commentsToRemove);
     console.log("Adding " + commentsToAdd.length);
     console.log(commentsToAdd);
-    for (let i = 0; i < commentsToRemove.length; i++) {
-      this._onHideCommentTimer(commentsToRemove[i]);
-    }
-
-    for (let i = 0; i < commentsToAdd.length; i++) {
-      this._addComment(commentsToAdd[i], this._getShownIndex(commentsToAdd[i]));
-    }
 
     this._clearTimers();
+    commentsToRemove.forEach(this._onHideCommentTimer, this);
+
+    // set hide timers for comments that were kept
+    this.state.shownComments.forEach(comment => {
+      if (this._getHideCommentTimerIndex(comment) === -1) {
+        this._setHideCommentTimer(comment);
+      }
+    }, this);
+
+    commentsToAdd.forEach(this._addComment, this);
+
     if (nextComment) {
       this._setShowCommentTimer(nextComment);
     }
@@ -172,30 +181,41 @@ export default class VideoPlayer extends React.Component {
     this._removeHideCommentTimer(__comment);
   }
 
+  _getHideCommentTimerIndex = __comment => {
+    if (!__comment) {
+      return -1;
+    }
+    for (let i = 0; i < this.clearCommentTimers.length; i++) {
+      // TODO: update this check when comment IDs are added
+      if (this.clearCommentTimers[i].comment.getData().message === __comment.getData().message) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   _removeHideCommentTimer = __comment => {
     if (!__comment) {
       // No comment provided
       return true;
     }
-    for (var i = 0; i < this.clearCommentTimers.length; i++) {
-      // TODO: update this check when comment IDs are added
-      if (this.clearCommentTimers[i].comment.getData().message === __comment.getData().message) {
-        this.clearCommentTimers.splice(i, 1);
-        return false;
-      }
+
+    var index = this._getHideCommentTimerIndex(__comment);
+
+    if (index > -1) {
+      this.clearCommentTimers.splice(index, 1);
     }
-    return true;
   }
 
-  _addComment = (__comment, __index = null) => {
-    let newComments = this.state.shownComments.slice();
+  _addComment = __comment => {
+  let newComments = this.state.shownComments.slice();
 
     // Show the comment
-    if (__index === null) {
-      newComments.push(__comment);
-    } else { 
-      newComments.splice(__index, 0, __comment);
-    }
+    // if (__index === null) {
+    //   newComments.push(__comment);
+    // } else { 
+      newComments.splice(this._getShownIndex(__comment), 0, __comment);
+    // }
     this.setState({ shownComments: newComments });
 
     // Set a timer to remove the comment when it ends
