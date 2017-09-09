@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import VideoPlayer from './components/VideoPlayer';
+import CommentList from './components/CommentList';
 import LinkedList from 'dbly-linked-list';
 import './App.css';
 
@@ -33,19 +34,21 @@ class App extends Component {
     });
   }
 
+
+
   render() {
     return (
       <div className='App'>
         <div className='App-header'>
           <h2>VOD Genius</h2>
         </div>
-        <p className='App-intro'>
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <VideoPlayer
-          videoID={this.state.videoID}
-          comments={this.state.comments}
-        />
+        <div className='playerWrapper'>
+          <VideoPlayer className='videoPlayer'
+            videoID={this.state.videoID}
+            comments={this.state.comments}
+          />
+          <CommentList />
+        </div>
       </div>
     );
   }

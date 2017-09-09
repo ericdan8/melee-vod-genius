@@ -14,7 +14,7 @@ export default class VideoPlayer extends React.Component {
     this.clearCommentTimers = [];
   }
 
-  render() {
+  render = () => {
     const opts = {
       height: '390',
       width: '640',
