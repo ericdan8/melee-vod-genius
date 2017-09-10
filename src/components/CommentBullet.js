@@ -1,4 +1,5 @@
 import React from 'react';
+import './CommentBullet.css';
 
 export default class CommentBullet extends React.Component {
   render = () => (

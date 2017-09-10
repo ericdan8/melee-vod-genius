@@ -9,7 +9,8 @@
     "react-redux": "^5.0.5",
     "react-scripts": "1.0.10",
     "react-youtube": "^7.4.0",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "tabletop": "^1.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
