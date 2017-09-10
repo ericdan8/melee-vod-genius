@@ -15,26 +15,6 @@ class App extends Component {
       comments: new LinkedList()
     }
     this.commentDB = null;
-    // this.state.comments.insert({
-    //   message: 'oops',
-    //   startTime: 2,
-    //   endTime: 3
-    // });
-    // this.state.comments.insert({
-    //   message: 'overlap test',
-    //   startTime: 2,
-    //   endTime: 4
-    // });
-    // this.state.comments.insert({
-    //   message: 'cat cat',
-    //   startTime: 4.5,
-    //   endTime: 9
-    // });
-    // this.state.comments.insert({
-    //   message: 'interrupting',
-    //   startTime: 6,
-    //   endTime: 12
-    // });
 
     Tabletop.init({
       key: 'https://docs.google.com/spreadsheets/d/1RLGEhOevwqDZlYam_XCC_RORm1Vke6LSrqK_TxZtpBc/edit?usp=sharing',
@@ -71,7 +51,9 @@ class App extends Component {
         <div className='App-header'>
           <h2>VOD Genius</h2>
         </div>
-        <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
+        <div className='videoIDInput'>
+          <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
+        </div>
         <div className='playerWrapper'>
           <VideoPlayer className='videoPlayer'
             videoID={this.state.videoID}

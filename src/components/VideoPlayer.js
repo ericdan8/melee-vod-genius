@@ -41,31 +41,24 @@ export default class VideoPlayer extends React.Component {
     );
   }
 
-  _onReady = event => {
-    // access to player in all event handlers via event.target
-    this.player = event.target;
-  }
-
-  _onStateChange = event => {
-    if (event.data) {
-      console.log(event.data);
-    }
+  _onPause = event => {
+    this._clearTimers();
   }
 
   _onPlay = event => {
-    console.log("currently shown: ");
-    console.log(this.state.shownComments);
+    // console.log("currently shown: ");
+    // console.log(this.state.shownComments);
     let commentsAtNewTime = this._getCommentsShownAtTime(event.target.getCurrentTime());
-    console.log("new comments: ");
-    console.log(commentsAtNewTime);
+    // console.log("new comments: ");
+    // console.log(commentsAtNewTime);
     var commentsToRemove = this.state.shownComments.filter(comment => !commentsAtNewTime.includes(comment));
     var commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
     let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
 
-    console.log("Removing " + commentsToRemove.length);
-    console.log(commentsToRemove);
-    console.log("Adding " + commentsToAdd.length);
-    console.log(commentsToAdd);
+    // console.log("Removing " + commentsToRemove.length);
+    // console.log(commentsToRemove);
+    // console.log("Adding " + commentsToAdd.length);
+    // console.log(commentsToAdd);
 
     this._clearTimers();
     commentsToRemove.forEach(this._onHideCommentTimer, this);
@@ -84,16 +77,23 @@ export default class VideoPlayer extends React.Component {
     }
   }
 
+  _onReady = event => {
+    // access to player in all event handlers via event.target
+    this.player = event.target;
+  }
+
+  _onStateChange = event => {
+    if (event.data) {
+      console.log(event.data);
+    }
+  }
+
   _getShownIndex = __comment => {
     var i = 0;
     while (this.state.shownComments[i] && this.state.shownComments[i].getData().startTime < __comment.getData().startTime) {
       i++;
     }
     return i;
-  }
-  
-  _onPause = event => {
-    this._clearTimers();
   }
 
   _getCommentList = () => 
