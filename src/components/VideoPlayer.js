@@ -1,5 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
+import TimerController from './TimerController';
 import './VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
@@ -40,45 +41,68 @@ export default class VideoPlayer extends React.Component {
       </div>
     );
   }
-
+  
   _onPause = event => {
-    this._clearTimers();
+    // this._clearTimers();
+    if (!!this.timerController) {
+      this.timerController.onPause(event.target.getCurrentTime());
+    }
   }
 
   _onPlay = event => {
     // console.log("currently shown: ");
     // console.log(this.state.shownComments);
-    let commentsAtNewTime = this._getCommentsShownAtTime(event.target.getCurrentTime());
-    // console.log("new comments: ");
-    // console.log(commentsAtNewTime);
-    var commentsToRemove = this.state.shownComments.filter(comment => !commentsAtNewTime.includes(comment));
-    var commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
-    let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
+    // let commentsAtNewTime = this._getCommentsShownAtTime(event.target.getCurrentTime());
+    // // console.log("new comments: ");
+    // // console.log(commentsAtNewTime);
+    // var commentsToRemove = this.state.shownComments.filter(comment => !commentsAtNewTime.includes(comment));
+    // var commentsToAdd = commentsAtNewTime.filter(comment => !this.state.shownComments.includes(comment));
+    // let nextComment = this._getNextCommentToShow(event.target.getCurrentTime());
 
-    // console.log("Removing " + commentsToRemove.length);
-    // console.log(commentsToRemove);
-    // console.log("Adding " + commentsToAdd.length);
-    // console.log(commentsToAdd);
+    // // console.log("Removing " + commentsToRemove.length);
+    // // console.log(commentsToRemove);
+    // // console.log("Adding " + commentsToAdd.length);
+    // // console.log(commentsToAdd);
 
-    this._clearTimers();
-    commentsToRemove.forEach(this._onHideCommentTimer, this);
+    // this._clearTimers();
+    // commentsToRemove.forEach(this._onHideCommentTimer, this);
 
-    // set hide timers for comments that were kept
-    this.state.shownComments.forEach(comment => {
-      if (this._getHideCommentTimerIndex(comment) === -1) {
-        this._setHideCommentTimer(comment);
-      }
-    }, this);
+    // // set hide timers for comments that were kept
+    // this.state.shownComments.forEach(comment => {
+    //   if (this._getHideCommentTimerIndex(comment) === -1) {
+    //     this._setHideCommentTimer(comment);
+    //   }
+    // }, this);
 
-    commentsToAdd.forEach(this._addComment, this);
+    // commentsToAdd.forEach(this._addComment, this);
 
-    if (nextComment) {
-      this._setShowCommentTimer(nextComment);
+    // if (nextComment) {
+    //   this._setShowCommentTimer(nextComment);
+    // }
+    if (!!this.timerController) {
+      this.timerController.onPlay(event.target.getCurrentTime());
+    }
+  }
+
+  _createTimerController = () => {
+    this.timerController = new TimerController({
+      comments: this.props.comments,
+      player: this.player,
+      showComment: this._addComment,
+      hideComment: this._onHideCommentTimer
+    });
+  }
+
+  componentDidUpdate = (oldProps) => {
+    if (!this.timerController && this.props.comments.getHeadNode() && this.props.comments !== oldProps.comments) {
+      this._createTimerController();
     }
   }
 
   _onReady = event => {
-    // access to player in all event handlers via event.target
+    if (!this.timerController && this.props.comments.getHeadNode()) {
+      this._createTimerController();
+    }
     this.player = event.target;
   }
 
@@ -180,6 +204,13 @@ export default class VideoPlayer extends React.Component {
     this.setState({ shownComments: newComments });
     this._removeHideCommentTimer(__comment);
   }
+  _hideComment = __comment => {
+    let newComments = this.state.shownComments.slice();
+
+    newComments.splice(newComments.indexOf(__comment), 1);
+    this.setState({ shownComments: newComments });
+    // this._removeHideCommentTimer(__comment);
+  }
 
   _getHideCommentTimerIndex = __comment => {
     if (!__comment) {
@@ -219,7 +250,21 @@ export default class VideoPlayer extends React.Component {
     this.setState({ shownComments: newComments });
 
     // Set a timer to remove the comment when it ends
-    this._setHideCommentTimer(__comment);
+    // this._setHideCommentTimer(__comment);
   }
   
+  _addCommentbu = __comment => {
+    let newComments = this.state.shownComments.slice();
+  
+      // Show the comment
+      // if (__index === null) {
+      //   newComments.push(__comment);
+      // } else { 
+        newComments.splice(this._getShownIndex(__comment), 0, __comment);
+      // }
+      this.setState({ shownComments: newComments });
+  
+      // Set a timer to remove the comment when it ends
+      this._setHideCommentTimer(__comment);
+    }
 }

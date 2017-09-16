@@ -24,7 +24,7 @@ class App extends Component {
       simpleSheet: true
     });
   }
-
+  
   onGetVideoID = videoID => {
     let comments = this.getCommentsFromID(videoID);
     if (comments) {
@@ -41,7 +41,7 @@ class App extends Component {
 
   buildComments = comments => {
     let list = new LinkedList();
-    comments.forEach(list.insert.bind(list));
+    comments.forEach(list.insert, list);
     return list;
   }
 
