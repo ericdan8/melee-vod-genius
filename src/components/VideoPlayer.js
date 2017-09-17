@@ -83,12 +83,6 @@ export default class VideoPlayer extends React.Component {
     }
   }
 
-  _onStateChange = event => {
-    if (event.data) {
-      console.log(event.data);
-    }
-  }
-
   _getShownIndex = __comment => {
     var i = 0;
     while (this.state.shownComments[i] && this.state.shownComments[i].getData().startTime < __comment.getData().startTime) {
@@ -106,7 +100,7 @@ export default class VideoPlayer extends React.Component {
     this.setState({ shownComments: [] })
   }
 
-  _hideComment = __comment => {
+  _hideComment = __comment => {[]
     let newComments = this.state.shownComments.slice();
 
     newComments.splice(newComments.indexOf(__comment), 1);

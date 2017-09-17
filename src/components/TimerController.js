@@ -47,20 +47,12 @@ export default class TimerController {
     }
   }
 
-  _getShownIndex = __comment => {
-    var i = 0;
-    while (this.shownComments[i] && this.shownComments[i].getData().startTime < __comment.getData().startTime) {
-      i++;
-    }
-    return i;
-  }
-
   _getCommentsShownAtTime = time => {  
     var comments = [];
     var commentToCheck = this.comments.getHeadNode();
 
     if (!time) {
-      return;
+      return [];
     }
     while (commentToCheck && commentToCheck.getData().startTime < time) {
       if (commentToCheck.getData().endTime > time) {
@@ -142,7 +134,7 @@ export default class TimerController {
 
   _getHideCommentTimerIndex = __comment => {
     if (!__comment) {
-      return -1;
+      return;
     }
     for (let i = 0; i < this.clearCommentTimers.length; i++) {
       // TODO: update this check when comment IDs are added
@@ -167,7 +159,7 @@ export default class TimerController {
   }
 
   _addComment = __comment => {
-    this.shownComments.splice(this._getShownIndex(__comment), 0, __comment);
+    this.shownComments.push(__comment);
     this.showComment(__comment);
     // Set a timer to remove the comment when it ends
     this._setHideCommentTimer(__comment);
