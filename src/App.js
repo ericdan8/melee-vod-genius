@@ -12,7 +12,8 @@ class App extends Component {
     super();
     this.state = {
       videoID: '',
-      comments: new LinkedList()
+      comments: new LinkedList(),
+      videoPlayer: null
     }
     this.commentDB = null;
 
@@ -27,10 +28,22 @@ class App extends Component {
   
   onGetVideoID = videoID => {
     let comments = this.getCommentsFromID(videoID);
+    let videoPlayer, commentLL;
+
     if (comments) {
-      this.setState({videoID, comments: this.buildComments(JSON.parse(comments))});
+      commentLL = this.buildComments(JSON.parse(comments));
+      videoPlayer = this.buildPlayer({videoID, comments: commentLL});
+      this.setState({videoPlayer: null, videoID, comments: commentLL});
+      this.setState({videoPlayer});
     }
   }
+
+  buildPlayer = options => (
+    <VideoPlayer className='videoPlayer'
+      videoID={options.videoID}
+      comments={options.comments}
+    />
+  )
 
   getCommentsFromID = videoID => {
     let selectedVideo = this.commentDB.find(item => item.video === videoID);
@@ -45,25 +58,20 @@ class App extends Component {
     return list;
   }
 
-  render() {
-    return (
-      <div className='App'>
-        <div className='App-header'>
-          <h2>VOD Genius</h2>
-        </div>
-        <div className='videoIDInput'>
-          <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
-        </div>
-        <div className='playerWrapper'>
-          <VideoPlayer className='videoPlayer'
-            videoID={this.state.videoID}
-            comments={this.state.comments}
-          />
-          <CommentList />
-        </div>
+  render = () => (
+    <div className='App'>
+      <div className='App-header'>
+        <h2>VOD Genius</h2>
       </div>
-    );
-  }
+      <div className='videoIDInput'>
+        <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
+      </div>
+      <div className='playerWrapper'>
+        {this.state.videoPlayer}
+        <CommentList />
+      </div>
+    </div>
+  );
 }
 
 export default App;

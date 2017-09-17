@@ -65,16 +65,22 @@ export default class VideoPlayer extends React.Component {
   }
 
   componentDidUpdate = (oldProps) => {
-    if (!this.timerController && this.props.comments.getHeadNode() && this.props.comments !== oldProps.comments) {
+    if (this.props.comments.getHeadNode() && this.props.comments !== oldProps.comments) {
+      if (this.timerController) {
+        this.timerController.destroy();
+      }
       this._createTimerController();
     }
   }
 
   _onReady = event => {
-    if (!this.timerController && this.props.comments.getHeadNode()) {
+    this.player = event.target;
+    if (this.props.comments.getHeadNode()) {
+      if (this.timerController) {
+        this.timerController.destroy();
+      }
       this._createTimerController();
     }
-    this.player = event.target;
   }
 
   _onStateChange = event => {

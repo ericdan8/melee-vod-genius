@@ -83,14 +83,18 @@ export default class TimerController {
   }
   
   _clearComments = () => {
+    this.shownComments.forEach(this.hideComment, this);
     this.shownComments = [];
   }
 
   _clearTimers = () => {
-    clearTimeout(this.showCommentTimer);
-    for (let i = 0; i < this.clearCommentTimers.length; i++) {
-      clearTimeout(this.clearCommentTimers[i].timerID);
+    if (this.showCommentTimer) {
+      clearTimeout(this.showCommentTimer);
     }
+    this.clearCommentTimers.forEach(item => {
+      clearTimeout(item.timerID);
+    })
+    
     this.clearCommentTimers = [];
   }
 
@@ -169,4 +173,16 @@ export default class TimerController {
     this._setHideCommentTimer(__comment);
   }
   
+  destroy = () => {
+    this._clearTimers();
+    this._clearComments();
+    this.comments = null;
+    this.showComment = null;
+    this.hideComment = null;
+    this.player = null;
+
+    this.showCommentTimer = null;
+    this.clearCommentTimers = null;
+    this.shownComments = null;
+  }
 }
