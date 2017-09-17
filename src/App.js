@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import VideoPlayer from './components/VideoPlayer';
-import CommentList from './components/CommentList';
+import VideoPlayer from './components/analysisView/VideoPlayer';
+import CommentList from './components/analysisView/commentList/CommentList';
 import LinkedList from 'dbly-linked-list';
 import TextInput from './components/TextInput';
 import Tabletop from 'tabletop';

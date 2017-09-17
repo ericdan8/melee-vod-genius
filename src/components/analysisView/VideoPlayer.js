@@ -1,6 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
-import TimerController from './TimerController';
+import TimerController from '../../controllers/analysisView/TimerController';
 import './VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
