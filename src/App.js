@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import VideoPlayer from './components/analysisView/VideoPlayer';
 import CommentList from './components/analysisView/commentList/CommentList';
+import CommentsTimeline from './components/analysisView/CommentsTimeline';
 import LinkedList from 'dbly-linked-list';
 import TextInput from './components/TextInput';
 import Tabletop from 'tabletop';
@@ -15,8 +16,9 @@ class App extends Component {
     this.state = {
       videoID: '',
       comments: new LinkedList(),
+      shownComments: [],
       videoPlayer: null,
-      shownComments: []
+      commentsTimeline: null
     }
     this.commentDB = null;
 
@@ -32,6 +34,11 @@ class App extends Component {
   _onCommentsChanged = newComments => {
     this.setState({shownComments: newComments});
   }
+
+  _onPlayerReady = event => {
+    let commentsTimeline = <CommentsTimeline width={parseInt(event.target.a.width, 10)} duration={event.target.getDuration()} comments={this.state.comments} />
+    this.setState({commentsTimeline})
+  }
   
   onGetVideoID = input => {
     let videoID, matches, videoPlayer, rawComments, comments;
@@ -44,7 +51,7 @@ class App extends Component {
       rawComments = this.getCommentsFromID(videoID);
       comments = this.buildComments(JSON.parse(rawComments));
       videoPlayer = this.buildPlayer({videoID, comments});
-      this.setState({videoPlayer, videoID, comments});
+      this.setState({videoPlayer, videoID, comments: JSON.parse(rawComments)});
     }
   }
 
@@ -53,6 +60,7 @@ class App extends Component {
       videoID={options.videoID}
       comments={options.comments}
       onCommentsChanged={this._onCommentsChanged.bind(this)}
+      onReady={this._onPlayerReady.bind(this)}
     />
   )
 
@@ -79,7 +87,10 @@ class App extends Component {
         <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
       <div className='playerWrapper'>
-        {this.state.videoPlayer}
+        <div>
+          {this.state.videoPlayer}
+          {this.state.commentsTimeline}
+        </div>
         <CommentList comments={this.state.shownComments.map(comment => comment.getData())}/>
       </div>
     </div>

@@ -79,6 +79,7 @@ export default class VideoPlayer extends React.Component {
       }
       this._createTimerController();
     }
+    this.props.onReady(event);
   }
 
   _getShownIndex = __comment => {
