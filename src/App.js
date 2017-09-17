@@ -7,6 +7,8 @@ import TextInput from './components/TextInput';
 import Tabletop from 'tabletop';
 import './App.css';
 
+'use strict';
+
 class App extends Component {
   constructor() {
     super();
@@ -31,15 +33,18 @@ class App extends Component {
     this.setState({shownComments: newComments});
   }
   
-  onGetVideoID = videoID => {
-    let comments = this.getCommentsFromID(videoID);
-    let videoPlayer, commentLL;
+  onGetVideoID = input => {
+    let videoID, matches, videoPlayer, rawComments, comments;
+    let rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
 
-    if (comments) {
-      commentLL = this.buildComments(JSON.parse(comments));
-      videoPlayer = this.buildPlayer({videoID, comments: commentLL});
-      this.setState({videoPlayer: null, videoID, comments: commentLL});
-      this.setState({videoPlayer});
+    matches = input.match(rx)
+
+    if (matches[1]) {
+      videoID = matches[1];
+      rawComments = this.getCommentsFromID(videoID);
+      comments = this.buildComments(JSON.parse(rawComments));
+      videoPlayer = this.buildPlayer({videoID, comments});
+      this.setState({videoPlayer, videoID, comments});
     }
   }
 
@@ -70,6 +75,7 @@ class App extends Component {
         <h2>VOD Genius</h2>
       </div>
       <div className='videoIDInput'>
+        <h3>Paste a YouTube URL here:</h3>
         <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
       <div className='playerWrapper'>
