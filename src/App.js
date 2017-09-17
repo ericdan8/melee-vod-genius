@@ -13,7 +13,8 @@ class App extends Component {
     this.state = {
       videoID: '',
       comments: new LinkedList(),
-      videoPlayer: null
+      videoPlayer: null,
+      shownComments: []
     }
     this.commentDB = null;
 
@@ -24,6 +25,10 @@ class App extends Component {
       }.bind(this),
       simpleSheet: true
     });
+  }
+
+  _onCommentsChanged = newComments => {
+    this.setState({shownComments: newComments});
   }
   
   onGetVideoID = videoID => {
@@ -42,6 +47,7 @@ class App extends Component {
     <VideoPlayer className='videoPlayer'
       videoID={options.videoID}
       comments={options.comments}
+      onCommentsChanged={this._onCommentsChanged.bind(this)}
     />
   )
 
@@ -68,7 +74,7 @@ class App extends Component {
       </div>
       <div className='playerWrapper'>
         {this.state.videoPlayer}
-        <CommentList />
+        <CommentList comments={this.state.shownComments.map(comment => comment.getData())}/>
       </div>
     </div>
   );

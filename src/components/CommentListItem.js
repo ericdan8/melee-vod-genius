@@ -10,7 +10,7 @@ export default class CommentListItem extends React.Component {
   }
 
   render = () => (
-    <div className='commentBullet'>
+    <div className='commentListItem'>
       <button onClick={this.toggleVisibility.bind(this)}/>
       <div className='commentMessage'>
         {this.state.visible ? this.props.message : ''}

@@ -1,5 +1,5 @@
-.commentBullet {
+.commentListItem {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-content: flex-start;
 }

@@ -11,7 +11,7 @@ export default class CommentList extends React.Component {
     const comments = this.props.comments;
     return (
       <div className='commentList'>
-        {comments.map(comment => <CommentListItem message={comment.getData().message}/>)}
+        {comments.map(comment => <CommentListItem message={comment.message}/>)}
       </div>
     );
   }

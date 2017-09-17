@@ -6,6 +6,7 @@ import './VideoPlayer.css';
 export default class VideoPlayer extends React.Component {
   constructor() {
     super();
+
     this.state = {
       videoID: '',
       shownComments: []
@@ -35,9 +36,6 @@ export default class VideoPlayer extends React.Component {
           onPlay={this._onPlay.bind(this)}
           onStateChange={this._onStateChange}
         />
-        <ul>
-          {this._getCommentList()}
-        </ul>
       </div>
     );
   }
@@ -100,11 +98,13 @@ export default class VideoPlayer extends React.Component {
     this.setState({ shownComments: [] })
   }
 
-  _hideComment = __comment => {[]
+  _hideComment = __comment => {
     let newComments = this.state.shownComments.slice();
 
     newComments.splice(newComments.indexOf(__comment), 1);
     this.setState({ shownComments: newComments });
+
+    this.props.onCommentsChanged(newComments);
   }
 
   _addComment = __comment => {
@@ -112,6 +112,8 @@ export default class VideoPlayer extends React.Component {
 
     newComments.splice(this._getShownIndex(__comment), 0, __comment);
     this.setState({ shownComments: newComments });
+
+    this.props.onCommentsChanged(newComments);
   }
   
 }
