@@ -1,5 +1,5 @@
 import React from 'react';
-import CommentBullet from './CommentBullet';
+import CommentListItem from './CommentListItem';
 import './CommentList.css';
 
 export default class CommentList extends React.Component {
@@ -11,7 +11,7 @@ export default class CommentList extends React.Component {
     const comments = this.props.comments;
     return (
       <div className='commentList'>
-        <CommentBullet/>
+        {comments.map(comment => <CommentListItem message={comment.getData().message}/>)}
       </div>
     );
   }
