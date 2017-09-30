@@ -21,7 +21,18 @@ app.get('/', (req, res, next) => {
   res.json({"message": "welcome!"});
 });
 
-app.post('/api/video/:videoId', (req, res, next) => {
+// GET a video's comments by ID
+app.get('/api/video/:videoId', (req, res, next) => {
+  Video.find({id: req.params.videoId}, function(err, video) {
+    if (err) {
+      res.send(err);
+    }
+    res.json(video.comments);
+  });
+});
+
+// First-time init for a video
+app.post('/api/video/', (req, res, next) => {
   var video = new Video();
   
   var comments = JSON.parse(req.query.comments);
