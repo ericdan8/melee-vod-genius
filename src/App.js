@@ -7,6 +7,7 @@ import LinkedList from 'dbly-linked-list';
 import TextInput from './components/TextInput';
 import Tabletop from 'tabletop';
 import './App.css';
+// https://www.youtube.com/watch?v=2g811Eo7K8U
 
 'use strict';
 
@@ -26,6 +27,7 @@ class App extends Component {
       key: 'https://docs.google.com/spreadsheets/d/1RLGEhOevwqDZlYam_XCC_RORm1Vke6LSrqK_TxZtpBc/edit?usp=sharing',
       callback: function(data, tabletop) { 
         this.commentDB = data;
+        console.log('db ready');
       }.bind(this),
       simpleSheet: true
     });
@@ -36,8 +38,8 @@ class App extends Component {
   }
 
   _onPlayerReady = event => {
-    let commentsTimeline = <CommentsTimeline width={parseInt(event.target.a.width, 10)} duration={event.target.getDuration()} comments={this.state.comments} />
-    this.setState({commentsTimeline})
+    // let commentsTimeline = <CommentsTimeline width={parseInt(event.target.a.width, 10)} duration={event.target.getDuration()} comments={this.state.comments} />
+    // this.setState({commentsTimeline})
   }
   
   onGetVideoID = input => {
@@ -46,7 +48,7 @@ class App extends Component {
 
     matches = input.match(rx)
 
-    if (matches[1]) {
+    if (matches && matches[1]) {
       videoID = matches[1];
       rawComments = this.getCommentsFromID(videoID);
       comments = this.buildComments(JSON.parse(rawComments));
@@ -84,13 +86,11 @@ class App extends Component {
       </div>
       <div className='videoIDInput'>
         <h3>Paste a YouTube URL here:</h3>
-        <TextInput value='2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
+        <TextInput value='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
       <div className='playerWrapper'>
-        <div>
-          {this.state.videoPlayer}
-          {this.state.commentsTimeline}
-        </div>
+        {this.state.videoPlayer}
+        {/* {this.state.commentsTimeline} */}
         <CommentList comments={this.state.shownComments.map(comment => comment.getData())}/>
       </div>
     </div>
