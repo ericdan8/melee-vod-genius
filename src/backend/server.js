@@ -27,7 +27,8 @@ app.get('/api/video/:videoId', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    res.json(video.comments);
+    console.log(video);
+    res.json(video);
   });
 });
 

@@ -1,11 +1,7 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+var VideoSchema = require('../schema/videoSchema')
+var CommentSchema = require('../schema/commentSchema');
 
-var videoSchema = new Schema({
-  id: String,
-  comments: Array
-})
+var videoModel = mongoose.model('Video', VideoSchema);
 
-var ex = mongoose.model('Video', videoSchema);
-
-module.exports = ex;
+module.exports = videoModel;
