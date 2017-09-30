@@ -33,22 +33,45 @@ app.get('/api/video/:videoId', (req, res, next) => {
 });
 
 // First-time init for a video
-app.post('/api/video/', (req, res, next) => {
-  var video = new Video();
-  
-  var comments = JSON.parse(req.query.comments);
-  console.log('starting post attempt...');
-  //body parser lets us use the req.body]
-  video.id = req.query.id;
-  video.comments = comments;
-  console.log(video);
-  video.save(function(err) {
-    console.log("callback called");
-    if (err) {
-      res.send(err);
-    }
-    res.json({ message: 'video successfully added!' });
-  });
-});
+
+app.post('/api/video/:videoId', 
+  (req, res, next) => {
+    Video.find({id: req.params.videoId}, function(err, video) {
+      if (err) {
+        res.send(err);
+      }
+      if (video.length) {
+        // add the new comment to the video
+        var newComment = JSON.parse(req.query.newComment);
+        var doc = video[0];
+        console.log(video);
+        console.log(doc);
+        doc.comments.push(newComment);
+
+        doc.save(function(err, updatedVideo) {
+          // do stuff with the updated video
+          console.log('new comment added!');
+          res.json(updatedVideo);
+        });
+      } else {
+        next();
+      }
+    });
+  },
+  (req, res, next) => {
+    var video = new Video();
+    var comment = JSON.parse(req.query.newComment);
+
+    video.id = req.params.id;
+    video.comments = comment;
+    console.log(video);
+    video.save(function(err) {
+      if (err) {
+        res.send(err);
+      }
+      res.json({ message: 'video successfully added!' });
+    });
+  }
+);
 
 app.listen(3001, () => console.log('server started'));
