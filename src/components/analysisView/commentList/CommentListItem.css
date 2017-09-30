@@ -21,6 +21,10 @@
   flex: 1;
 }
 
+.commentListItem .commentHeader .toggleVisibility {
+  flex: 1;
+}
+
 .commentListItem .commentHeader .commentAuthor {
   flex: 5;
 }
