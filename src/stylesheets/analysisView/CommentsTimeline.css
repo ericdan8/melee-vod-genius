@@ -1,0 +1,10 @@
+.commentsTimeline {
+  display: flex;
+  flex-direction: row;
+  height: 30px; }
+
+.commentRect {
+  height: 100%;
+  background-color: #008000; }
+
+/*# sourceMappingURL=CommentsTimeline.css.map */

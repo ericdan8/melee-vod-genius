@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,YAAa;EACX,OAAO,EAAE,IAAI;EACb,cAAc,EAAE,MAAM;EACtB,aAAa,EAAE,UAAU;EACzB,KAAK,EAAE,GAAG",
+"sources": ["../../../src/components/analysisView/commentList/CommentList.scss"],
+"names": [],
+"file": "CommentList.css"
+}

@@ -1,0 +1,7 @@
+.commentList {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  width: 30%; }
+
+/*# sourceMappingURL=CommentList.css.map */
