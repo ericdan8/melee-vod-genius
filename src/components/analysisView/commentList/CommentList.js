@@ -1,6 +1,6 @@
 import React from 'react';
 import CommentListItem from './CommentListItem';
-import '/src/stylesheets/analysisView/commentList/CommentList.css';
+import '~/src/stylesheets/analysisView/commentList/CommentList.css';
 
 export default class CommentList extends React.Component {
   constructor() {

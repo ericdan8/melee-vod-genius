@@ -1,7 +1,7 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import TimerController from '../../controllers/analysisView/TimerController';
-import '/src/stylesheets/analysisView/VideoPlayer.css';
+import '~/src/stylesheets/analysisView/VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
   constructor() {
@@ -49,7 +49,7 @@ export default class VideoPlayer extends React.Component {
 
   _onPlay = event => {
     if (!!this.timerController) {
-      this.timerController.onPlay(event.target.getCurrentTime());
+        this.timerController.onPlay(event.target.getCurrentTime());
     }
   }
 

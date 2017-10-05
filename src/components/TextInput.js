@@ -1,4 +1,5 @@
 import React from 'react';
+import { Input, Button } from 'muicss/react';
 
 export default class TextInput extends React.Component {
   constructor() {
@@ -18,8 +19,8 @@ export default class TextInput extends React.Component {
 
   render = () => (
     <div>
-      <input value={this.state.text} onChange={this.onTextChange.bind(this)}/>
-      <button onClick={this.onButtonPress.bind(this)}/>
+      <Input hint='Paste a YouTube URL here...' value={this.state.text} onChange={this.onTextChange.bind(this)}/>
+      <Button onMouseUp={this.onButtonPress.bind(this)}>Submit URL</Button>
     </div>
   )
 }

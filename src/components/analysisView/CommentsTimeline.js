@@ -1,6 +1,6 @@
 import React from 'react';
 
-import '/src/stylesheets/analysisView/CommentsTimeline.css';
+import '~/src/stylesheets/analysisView/CommentsTimeline.css';
 
 export default class CommentsTimeline extends React.Component {
   constructor(props) {

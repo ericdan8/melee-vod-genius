@@ -85,7 +85,6 @@ class App extends Component {
         <h2>VOD Genius</h2>
       </div>
       <div className='videoIDInput'>
-        <h3>Paste a YouTube URL here:</h3>
         <TextInput value='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
       <div className='playerWrapper'>
