@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Button } from 'muicss/react';
+import { FormGroup, FormControl, Button } from 'react-bootstrap';
 
 export default class TextInput extends React.Component {
   constructor() {
@@ -18,9 +18,14 @@ export default class TextInput extends React.Component {
   }
 
   render = () => (
-    <div>
-      <Input hint='Paste a YouTube URL here...' value={this.state.text} onChange={this.onTextChange.bind(this)}/>
-      <Button onMouseUp={this.onButtonPress.bind(this)}>Submit URL</Button>
-    </div>
+    <FormGroup>
+      <FormControl
+        type='text'
+        placeholder='Paste a YouTube URL here...'
+        value={this.state.text}
+        onChange={this.onTextChange.bind(this)}
+      />
+      <Button bsStyle='primary'>Submit URL</Button>
+    </FormGroup>
   )
 }

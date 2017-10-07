@@ -3,7 +3,6 @@
   flex-direction: column;
   text-align: center;
   align-content: space-between;
-  align-items: center;
 }
 
 .App-logo {
@@ -43,4 +42,5 @@
 
 .videoIDInput {
   width: 30%;
+  align-self: center;
 }
