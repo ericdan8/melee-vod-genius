@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, Panel } from 'react-bootstrap';
 // import './CommentListItem.css';
 import '~/src/stylesheets/analysisView/commentList/CommentListItem.css';
 
@@ -18,14 +19,18 @@ export default class CommentListItem extends React.Component {
 
     return (
       <div className='commentListItem'>
-        <div className='commentHeader'>
-          <button className='toggleVisibility' onClick={this.toggleVisibility.bind(this)}/>
-          {score}
-          {author}
-        </div>
-        <div className='commentBody'>
-          {message}
-        </div>
+        <Button bsStyle='primary' className='toggleVisibility' onClick={this.toggleVisibility.bind(this)}>
+          Toggle visibility
+        </Button>
+        <Panel collapsible expanded={this.state.visible}>
+          <div className='commentHeader'>
+            {score}
+            {author}
+          </div>
+          <div className='commentBody'>
+            {message}
+          </div>
+        </Panel>
       </div>
     )
   }

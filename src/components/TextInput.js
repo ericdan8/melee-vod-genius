@@ -25,7 +25,7 @@ export default class TextInput extends React.Component {
         value={this.state.text}
         onChange={this.onTextChange.bind(this)}
       />
-      <Button bsStyle='primary'>Submit URL</Button>
+      <Button bsStyle='primary' onClick={this.onButtonPress.bind(this)}>Submit URL</Button>
     </FormGroup>
   )
 }
