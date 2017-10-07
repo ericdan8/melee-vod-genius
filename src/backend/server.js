@@ -1,7 +1,9 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var Video = require('./model/video');
+var Comment = require('./model/comment');
 var bodyParser = require('body-parser');
+var dbUtils = require('./dbUtils');
 
 var app = express();
 
@@ -23,7 +25,7 @@ app.get('/', (req, res, next) => {
 
 // GET a video's comments by ID
 app.get('/api/video/:videoId', (req, res, next) => {
-  Video.find({id: req.params.videoId}, function(err, video) {
+  Video.find({videoId: req.params.videoId}, function(err, video) {
     if (err) {
       res.send(err);
     }
@@ -36,18 +38,24 @@ app.get('/api/video/:videoId', (req, res, next) => {
 
 app.post('/api/video/:videoId', 
   (req, res, next) => {
-    Video.find({id: req.params.videoId}, function(err, video) {
+    Video.find({videoId: req.params.videoId}, function(err, video) {
       if (err) {
         res.send(err);
       }
       if (video.length) {
         // add the new comment to the video
-        var newComment = JSON.parse(req.query.newComment);
+        var newCommentData = JSON.parse(req.query.newComment);
         var doc = video[0];
+        var newComment = new Comment(newCommentData);
         console.log(video);
         console.log(doc);
-        doc.comments.push(newComment);
+        doc.comments.push(newComment._id);
 
+        newComment.save(function(err) {
+          if (err) {
+            res.send(err);
+          }
+        });
         doc.save(function(err, updatedVideo) {
           // do stuff with the updated video
           console.log('new comment added!');
@@ -60,11 +68,17 @@ app.post('/api/video/:videoId',
   },
   (req, res, next) => {
     var video = new Video();
-    var comment = JSON.parse(req.query.newComment);
-
-    video.id = req.params.id;
-    video.comments = comment;
+    var newCommentData = JSON.parse(req.query.newComment);
+    var newComment = new Comment(newCommentData);
+    
+    video.videoId = req.params.videoId;
+    video.comments = [newComment._id];
     console.log(video);
+    newComment.save(function(err) {
+      if (err) {
+        res.send(err);
+      }
+    });
     video.save(function(err) {
       if (err) {
         res.send(err);

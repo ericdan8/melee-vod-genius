@@ -3,7 +3,7 @@ var CommentSchema = require('./commentSchema');
 var Schema = mongoose.Schema;
 
 var videoSchema = new Schema({
-  id: String,
+  videoId: String,
   comments: [CommentSchema]
 })
 
