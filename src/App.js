@@ -6,10 +6,13 @@ import CommentsTimeline from './components/analysisView/CommentsTimeline';
 import LinkedList from 'dbly-linked-list';
 import TextInput from './components/TextInput';
 import Tabletop from 'tabletop';
+import axios from 'axios';
 import './App.css';
 // https://www.youtube.com/watch?v=2g811Eo7K8U
 
 'use strict';
+
+const API_URL = 'http://localhost:3001/api/video/';
 
 class App extends Component {
   constructor() {
@@ -51,9 +54,9 @@ class App extends Component {
     if (matches && matches[1]) {
       videoID = matches[1];
       rawComments = this.getCommentsFromID(videoID);
-      comments = this.buildComments(JSON.parse(rawComments));
-      videoPlayer = this.buildPlayer({videoID, comments});
-      this.setState({videoPlayer, videoID, comments: JSON.parse(rawComments)});
+      // comments = this.buildComments(JSON.parse(rawComments));
+      // videoPlayer = this.buildPlayer({videoID, comments});
+      // this.setState({videoPlayer, videoID, comments: JSON.parse(rawComments)});
     }
   }
 
@@ -67,10 +70,11 @@ class App extends Component {
   )
 
   getCommentsFromID = videoID => {
-    let selectedVideo = this.commentDB.find(item => item.video === videoID);
-    if (selectedVideo) {
-      return selectedVideo.comments;
-    }
+    // let selectedVideo = this.commentDB.find(item => item.video === videoID);
+    // if (selectedVideo) {
+    //   return selectedVideo.comments;
+    // }
+    axios.get(API_URL + videoID).then(res => console.log(res));
   }
 
   buildComments = comments => {

@@ -9,8 +9,8 @@ var dbUtils = {
     return newComment;
   },
 
-  saveComment: (comment, res) => {
-    comment.save(function(err) {
+  saveDocument: (doc, res) => {
+    doc.save(function(err) {
       if (err) {
         res.send(err);
       }

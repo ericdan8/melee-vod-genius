@@ -14,6 +14,17 @@ mongoose.connect(mongoDB, { useMongoClient: true })
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+//To prevent errors from Cross Origin Resource Sharing, we will set 
+//our headers to allow CORS with middleware like so:
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+ //and remove cacheing so we get the most recent comments
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
+ });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -42,48 +53,28 @@ app.post('/api/video/:videoId',
       if (err) {
         res.send(err);
       }
-      if (video.length) {
-        // add the new comment to the video
-        var newCommentData = JSON.parse(req.query.newComment);
-        var doc = video[0];
-        var newComment = new Comment(newCommentData);
-        console.log(video);
-        console.log(doc);
-        doc.comments.push(newComment._id);
+      var newCommentData = JSON.parse(req.query.newComment);
+      var newComment = new Comment(newCommentData);
 
-        newComment.save(function(err) {
-          if (err) {
-            res.send(err);
-          }
-        });
-        doc.save(function(err, updatedVideo) {
-          // do stuff with the updated video
-          console.log('new comment added!');
-          res.json(updatedVideo);
-        });
-      } else {
-        next();
+
+      dbUtils.saveDocument(newComment);
+
+      if (video.length < 1) {
+        video = new Video();
+        
+        video.videoId = req.params.videoId;
+        video.comments = [newComment._id];
       }
-    });
-  },
-  (req, res, next) => {
-    var video = new Video();
-    var newCommentData = JSON.parse(req.query.newComment);
-    var newComment = new Comment(newCommentData);
-    
-    video.videoId = req.params.videoId;
-    video.comments = [newComment._id];
-    console.log(video);
-    newComment.save(function(err) {
-      if (err) {
-        res.send(err);
+      else {
+        video = video[0];
+        video.comments.push(newComment._id);
       }
-    });
-    video.save(function(err) {
-      if (err) {
-        res.send(err);
-      }
-      res.json({ message: 'video successfully added!' });
+
+      video.save(function(err, updatedVideo) {
+        // do stuff with the updated video
+        console.log('new comment added!');
+        res.json(updatedVideo);
+      });
     });
   }
 );

@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var videoSchema = new Schema({
   videoId: String,
-  comments: [CommentSchema]
+  comments: [{type: Schema.ObjectId, ref: 'Comment'}]
 })
 
 module.exports = videoSchema;
