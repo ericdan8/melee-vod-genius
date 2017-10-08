@@ -30,19 +30,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res, next) => {
-  console.log('request received!');
-  res.json({"message": "welcome!"});
+  console.log('GET request received');
 });
 
 // GET a video's comments by ID
 app.get('/api/video/:videoId', (req, res, next) => {
-  Video.find({videoId: req.params.videoId}, function(err, video) {
-    if (err) {
-      res.send(err);
-    }
-    console.log(video);
-    res.json(video);
-  });
+  Video.find({videoId: req.params.videoId})
+    .populate('comments')
+    .exec(function(err, video) {
+      if (err) {
+        res.send(err);
+      }
+      console.log('serving video ' + req.params.videoId);
+      res.json(video[0]);
+    });
 });
 
 // First-time init for a video
@@ -72,7 +73,7 @@ app.post('/api/video/:videoId',
 
       video.save(function(err, updatedVideo) {
         // do stuff with the updated video
-        console.log('new comment added!');
+        console.log('new comment added to video ' + req.param.videoId);
         res.json(updatedVideo);
       });
     });
