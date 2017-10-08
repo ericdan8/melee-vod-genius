@@ -53,10 +53,12 @@ class App extends Component {
 
     if (matches && matches[1]) {
       videoID = matches[1];
-      rawComments = this.getCommentsFromID(videoID);
-      // comments = this.buildComments(JSON.parse(rawComments));
-      // videoPlayer = this.buildPlayer({videoID, comments});
-      // this.setState({videoPlayer, videoID, comments: JSON.parse(rawComments)});
+      this.getCommentsFromID(videoID).then(comments => {
+        console.log(comments);
+        var commentLL = this.buildComments(comments);
+        videoPlayer = this.buildPlayer({videoID, comments: commentLL});
+        this.setState({videoPlayer, videoID, comments});
+      });
     }
   }
 
@@ -70,14 +72,15 @@ class App extends Component {
   )
 
   getCommentsFromID = videoID => {
-    // let selectedVideo = this.commentDB.find(item => item.video === videoID);
-    // if (selectedVideo) {
-    //   return selectedVideo.comments;
-    // }
-    axios.get(API_URL + videoID).then(res => console.log(res));
+    return new Promise((resolve, reject) => {
+      axios.get(API_URL + videoID).then(function(res) {
+        resolve(res.data.comments);
+      });
+    });
   }
 
   buildComments = comments => {
+    // TODO: make sure comments are created in the correct order 
     let list = new LinkedList();
     comments.forEach(list.insert, list);
     return list;
