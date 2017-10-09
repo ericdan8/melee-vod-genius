@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import VideoPlayer from './components/analysisView/VideoPlayer';
 import CommentList from './components/analysisView/commentList/CommentList';
 import CommentsTimeline from './components/analysisView/CommentsTimeline';
 import LinkedList from 'dbly-linked-list';
 import TextInput from './components/TextInput';
-import Tabletop from 'tabletop';
 import axios from 'axios';
 import './App.css';
 // https://www.youtube.com/watch?v=2g811Eo7K8U
@@ -25,15 +23,6 @@ class App extends Component {
       commentsTimeline: null
     }
     this.commentDB = null;
-
-    Tabletop.init({
-      key: 'https://docs.google.com/spreadsheets/d/1RLGEhOevwqDZlYam_XCC_RORm1Vke6LSrqK_TxZtpBc/edit?usp=sharing',
-      callback: function(data, tabletop) { 
-        this.commentDB = data;
-        console.log('db ready');
-      }.bind(this),
-      simpleSheet: true
-    });
   }
 
   _onCommentsChanged = newComments => {
@@ -46,19 +35,23 @@ class App extends Component {
   }
   
   onGetVideoID = input => {
-    let videoID, matches, videoPlayer, rawComments, comments;
-    let rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+    let videoID, matches, videoPlayer, comments;
+    let rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*/;
 
     matches = input.match(rx)
 
     if (matches && matches[1]) {
       videoID = matches[1];
-      this.getCommentsFromID(videoID).then(comments => {
-        console.log(comments);
-        var commentLL = this.buildComments(comments);
-        videoPlayer = this.buildPlayer({videoID, comments: commentLL});
-        this.setState({videoPlayer, videoID, comments});
-      });
+      this.getCommentsFromID(videoID)
+        .then(commentData => {
+          comments = this.buildComments(commentData);
+          videoPlayer = this.buildPlayer({videoID, comments});
+          this.setState({videoPlayer, videoID, commentData});
+        })
+        .catch(err => {
+          console.error('Error retrieving comments...');
+          console.error(err);
+        });
     }
   }
 
@@ -73,15 +66,16 @@ class App extends Component {
 
   getCommentsFromID = videoID => {
     return new Promise((resolve, reject) => {
-      axios.get(API_URL + videoID).then(function(res) {
-        resolve(res.data.comments);
-      });
+      axios.get(API_URL + videoID)
+        .then(res => resolve(res.data.comments))
+        .catch(err => reject(err));
     });
   }
 
   buildComments = comments => {
     // TODO: make sure comments are created in the correct order 
     let list = new LinkedList();
+    comments.sort((a, b) => a.startTime - b.startTime);
     comments.forEach(list.insert, list);
     return list;
   }

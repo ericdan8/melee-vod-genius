@@ -46,38 +46,35 @@ app.get('/api/video/:videoId', (req, res, next) => {
     });
 });
 
-// First-time init for a video
+app.post('/api/video/:videoId', (req, res, next) => {
+  Video.find({videoId: req.params.videoId}, function(err, video) {
+    if (err) {
+      res.send(err);
+    }
+    console.log('adding comment to video ' + req.params.videoId);
+    var newCommentData = JSON.parse(req.query.newComment);
+    var newComment = new Comment(newCommentData);
 
-app.post('/api/video/:videoId', 
-  (req, res, next) => {
-    Video.find({videoId: req.params.videoId}, function(err, video) {
-      if (err) {
-        res.send(err);
-      }
-      var newCommentData = JSON.parse(req.query.newComment);
-      var newComment = new Comment(newCommentData);
+    dbUtils.saveDocument(newComment);
 
+    // first comment on a particular video 
+    if (video.length < 1) {
+      video = new Video();
+      
+      video.videoId = req.params.videoId;
+      video.comments = [newComment._id];
+    }
+    else {
+      video = video[0];
+      video.comments.push(newComment._id);
+    }
 
-      dbUtils.saveDocument(newComment);
-
-      if (video.length < 1) {
-        video = new Video();
-        
-        video.videoId = req.params.videoId;
-        video.comments = [newComment._id];
-      }
-      else {
-        video = video[0];
-        video.comments.push(newComment._id);
-      }
-
-      video.save(function(err, updatedVideo) {
-        // do stuff with the updated video
-        console.log('new comment added to video ' + req.param.videoId);
-        res.json(updatedVideo);
-      });
+    video.save(function(err, updatedVideo) {
+      // do stuff with the updated video
+      console.log('new comment added to video ' + req.param.videoId);
+      res.json(updatedVideo);
     });
-  }
-);
+  });
+});
 
 app.listen(3001, () => console.log('server started'));
