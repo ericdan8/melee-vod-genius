@@ -1,0 +1,8 @@
+.analysisView {
+  display: flex;
+  flex-direction: row;
+  .videoContainer {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,8 @@
+.analysisView {
+  display: flex;
+  flex-direction: row; }
+  .analysisView .videoContainer {
+    display: flex;
+    flex-direction: column; }
+
+/*# sourceMappingURL=AnalysisView.css.map */

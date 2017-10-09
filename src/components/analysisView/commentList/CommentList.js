@@ -2,17 +2,13 @@ import React from 'react';
 import CommentListItem from './CommentListItem';
 import '~/src/stylesheets/analysisView/commentList/CommentList.css';
 
-export default class CommentList extends React.Component {
-  constructor() {
-    super();
-  }
-
-  render = () => {
-    const comments = this.props.comments;
-    return (
-      <div className='commentList'>
-        {comments.map(comment => <CommentListItem comment={comment} key={comment._id}/>)}
-      </div>
-    );
-  }
+const CommentList = (props) => {
+  const { comments } = props;
+  return (
+    <div className='commentList'>
+      {comments.map(comment => <CommentListItem comment={comment} key={comment._id}/>)}
+    </div>
+  );
 }
+
+export default CommentList;
