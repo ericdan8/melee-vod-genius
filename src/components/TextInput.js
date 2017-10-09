@@ -2,10 +2,10 @@ import React from 'react';
 import { FormGroup, FormControl, Button } from 'react-bootstrap';
 
 export default class TextInput extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      text: ''
+      text: this.props.defaultValue || ''
     }
   }
 

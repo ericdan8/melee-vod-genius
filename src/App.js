@@ -92,7 +92,7 @@ class App extends Component {
         <h2>VOD Genius</h2>
       </div>
       <div className='videoIDInput'>
-        <TextInput value='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
+        <TextInput defaultValue='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
       <div className='playerWrapper'>
         {this.state.videoPlayer}
