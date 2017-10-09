@@ -6,7 +6,7 @@ export default class VideoURLInput extends React.Component {
     let videoId, matches;
     let rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*/;
 
-    matches = input.match(rx)
+    matches = input.match(rx);
 
     if (matches && matches[1]) {
       videoId = matches[1];

@@ -6,7 +6,7 @@ export default class TextInput extends React.Component {
     super(props);
     this.state = {
       text: this.props.defaultValue || ''
-    }
+    };
   }
 
   onTextChange = event => {

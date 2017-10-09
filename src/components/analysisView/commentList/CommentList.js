@@ -9,6 +9,6 @@ const CommentList = (props) => {
       {comments.map(comment => <CommentListItem comment={comment} key={comment._id}/>)}
     </div>
   );
-}
+};
 
 export default CommentList;

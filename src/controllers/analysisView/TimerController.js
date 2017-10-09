@@ -85,7 +85,7 @@ export default class TimerController {
     }
     this.clearCommentTimers.forEach(item => {
       clearTimeout(item.timerID);
-    })
+    });
     
     this.clearCommentTimers = [];
   }

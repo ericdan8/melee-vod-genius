@@ -22,9 +22,9 @@ export default class CommentsTimeline extends React.Component {
       left: (comment.startTime / this.duration) * this.width,
       background: '#008000',
       opacity: 0.2
-    }
+    };
 
-    return (<div className='commentRect' style={style}/>)
+    return (<div className='commentRect' style={style}/>);
 
   }
 }

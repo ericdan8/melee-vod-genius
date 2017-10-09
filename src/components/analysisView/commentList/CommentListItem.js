@@ -8,7 +8,7 @@ export default class CommentListItem extends React.Component {
     super();
     this.state = {
       visible: true
-    }
+    };
   }
 
   render = () => {
@@ -32,7 +32,7 @@ export default class CommentListItem extends React.Component {
           </div>
         </Panel>
       </div>
-    )
+    );
   }
 
   toggleVisibility = () => {

@@ -13,7 +13,7 @@ export default class AnalysisView extends React.Component {
     this.state = {
       comments: [],
       videoPlayerVisible: false
-    }
+    };
     
     this.getCommentsFromId(match.params.videoId)
     .then(commentData => {
@@ -35,7 +35,7 @@ export default class AnalysisView extends React.Component {
       playerVars: { // https://developers.google.com/youtube/player_parameters
         autoplay: 0
       }
-    }
+    };
     const { videoId } = this.props.match.params;
 
     return (

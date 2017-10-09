@@ -10,7 +10,7 @@ export default class VideoPlayer extends React.Component {
     this.state = {
       videoId: '',
       shownComments: []
-    }
+    };
     this.player = null;
     this.showCommentTimer = null;
     this.clearCommentTimers = [];
@@ -49,7 +49,7 @@ export default class VideoPlayer extends React.Component {
 
   _onPlay = event => {
     if (!!this.timerController) {
-        this.timerController.onPlay(event.target.getCurrentTime());
+      this.timerController.onPlay(event.target.getCurrentTime());
     }
   }
 
@@ -96,7 +96,7 @@ export default class VideoPlayer extends React.Component {
     )
   
   _clearComments = () => {
-    this.setState({ shownComments: [] })
+    this.setState({ shownComments: [] });
   }
 
   _hideComment = __comment => {

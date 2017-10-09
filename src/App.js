@@ -7,8 +7,6 @@ import VideoURLInput from './components/VideoURLInput';
 import './App.css';
 // https://www.youtube.com/watch?v=2g811Eo7K8U
 
-'use strict';
-
 class App extends Component {
   constructor() {
     super();
@@ -18,7 +16,7 @@ class App extends Component {
       shownComments: [],
       videoPlayer: null,
       commentsTimeline: null
-    }
+    };
     this.commentDB = null;
   }
 
