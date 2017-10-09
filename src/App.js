@@ -4,6 +4,8 @@ import CommentList from './components/analysisView/commentList/CommentList';
 import CommentsTimeline from './components/analysisView/CommentsTimeline';
 import LinkedList from 'dbly-linked-list';
 import TextInput from './components/TextInput';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import YouTube from 'react-youtube';
 import axios from 'axios';
 import './App.css';
 // https://www.youtube.com/watch?v=2g811Eo7K8U
@@ -34,7 +36,7 @@ class App extends Component {
     // this.setState({commentsTimeline})
   }
   
-  onGetVideoID = input => {
+  onGetVideoID = (history, input) => {
     let videoId, matches, videoPlayer, comments;
     let rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*/;
 
@@ -47,6 +49,7 @@ class App extends Component {
           comments = this.buildComments(commentData);
           videoPlayer = this.buildPlayer({videoId, comments});
           this.setState({videoPlayer, videoId, commentData});
+          history.push('/video/' + videoId);
         })
         .catch(err => {
           console.error('Error retrieving comments...');
@@ -73,7 +76,6 @@ class App extends Component {
   }
 
   buildComments = comments => {
-    // TODO: make sure comments are created in the correct order 
     let list = new LinkedList();
     comments.sort((a, b) => a.startTime - b.startTime);
     comments.forEach(list.insert, list);
@@ -81,19 +83,27 @@ class App extends Component {
   }
 
   render = () => (
-    <div className='App'>
-      <div className='App-header'>
-        <h2>VOD Genius</h2>
+    <Router>
+      <div className='App'>
+        <div className='App-header'>
+          <h2>VOD Genius</h2>
+        </div>
+        <Route exact path='/' render={({history}) =>
+          <div className='videoIDInput'>
+            <TextInput defaultValue='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this, history)}/>
+          </div>
+        }/>
+        <Route path='/video/:videoId' render={({match}) => (
+          // <div className='playerWrapper'>
+          //   {this.state.videoPlayer}
+          //   {/* {this.state.commentsTimeline} */}
+          //   <CommentList comments={this.state.shownComments.map(comment => comment.getData())}/>
+          // </div>
+          // TODO: figure out a better way to store and display the comments
+          <YouTube videoId={match.params.videoId}/>
+        )}/>
       </div>
-      <div className='videoIdInput'>
-        <TextInput defaultValue='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
-      </div>
-      <div className='playerWrapper'>
-        {this.state.videoPlayer}
-        {/* {this.state.commentsTimeline} */}
-        <CommentList comments={this.state.shownComments.map(comment => comment.getData())}/>
-      </div>
-    </div>
+    </Router>
   );
 }
 
