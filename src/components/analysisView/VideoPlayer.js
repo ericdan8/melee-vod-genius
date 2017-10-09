@@ -8,7 +8,7 @@ export default class VideoPlayer extends React.Component {
     super();
 
     this.state = {
-      videoID: '',
+      videoId: '',
       shownComments: []
     }
     this.player = null;
@@ -24,12 +24,12 @@ export default class VideoPlayer extends React.Component {
         autoplay: 1
       }
     };
-    const { videoID } = this.props;
+    const { videoId } = this.props;
 
     return (
       <div className='Video-container'>
         <YouTube
-          videoId={videoID}
+          videoId={videoId}
           opts={opts}
           onReady={this._onReady.bind(this)}
           onPause={this._onPause.bind(this)}

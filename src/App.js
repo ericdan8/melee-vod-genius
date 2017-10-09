@@ -16,7 +16,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      videoID: '',
+      videoId: '',
       comments: new LinkedList(),
       shownComments: [],
       videoPlayer: null,
@@ -35,18 +35,18 @@ class App extends Component {
   }
   
   onGetVideoID = input => {
-    let videoID, matches, videoPlayer, comments;
+    let videoId, matches, videoPlayer, comments;
     let rx = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|&v(?:i)?=))([^#&?]*).*/;
 
     matches = input.match(rx)
 
     if (matches && matches[1]) {
-      videoID = matches[1];
-      this.getCommentsFromID(videoID)
+      videoId = matches[1];
+      this.getCommentsFromID(videoId)
         .then(commentData => {
           comments = this.buildComments(commentData);
-          videoPlayer = this.buildPlayer({videoID, comments});
-          this.setState({videoPlayer, videoID, commentData});
+          videoPlayer = this.buildPlayer({videoId, comments});
+          this.setState({videoPlayer, videoId, commentData});
         })
         .catch(err => {
           console.error('Error retrieving comments...');
@@ -57,16 +57,16 @@ class App extends Component {
 
   buildPlayer = options => (
     <VideoPlayer className='videoPlayer'
-      videoID={options.videoID}
+      videoId={options.videoId}
       comments={options.comments}
       onCommentsChanged={this._onCommentsChanged.bind(this)}
       onReady={this._onPlayerReady.bind(this)}
     />
   )
 
-  getCommentsFromID = videoID => {
+  getCommentsFromID = videoId => {
     return new Promise((resolve, reject) => {
-      axios.get(API_URL + videoID)
+      axios.get(API_URL + videoId)
         .then(res => resolve(res.data.comments))
         .catch(err => reject(err));
     });
@@ -85,7 +85,7 @@ class App extends Component {
       <div className='App-header'>
         <h2>VOD Genius</h2>
       </div>
-      <div className='videoIDInput'>
+      <div className='videoIdInput'>
         <TextInput defaultValue='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
       <div className='playerWrapper'>
