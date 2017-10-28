@@ -1,5 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
+import TimerManager from '../../controllers/analysisView/TimerManager';
 import TimerController from '../../controllers/analysisView/TimerController';
 import '~/src/stylesheets/analysisView/VideoPlayer.css';
 
@@ -42,44 +43,45 @@ export default class VideoPlayer extends React.Component {
   
   _onPause = event => {
     // this._clearTimers();
-    if (!!this.timerController) {
-      this.timerController.onPause(event.target.getCurrentTime());
+    if (!!this.timerManager) {
+      this.timerManager.onPause(event.target.getCurrentTime());
     }
   }
 
   _onPlay = event => {
-    if (!!this.timerController) {
-      this.timerController.onPlay(event.target.getCurrentTime());
+    if (!!this.timerManager) {
+      this.timerManager.onPlay(event.target.getCurrentTime());
     }
   }
 
-  _createTimerController = () => {
-    this.timerController = new TimerController({
+  _createTimerManager = () => {
+    this.timerManager = new TimerManager({
       comments: this.props.comments,
       player: this.player,
-      showComment: this._addComment,
-      hideComment: this._hideComment
+      onCommentsChanged: this._onCommentsChanged
     });
   }
 
   componentDidUpdate = (oldProps) => {
-    if (this.props.comments.getHeadNode() && this.props.comments !== oldProps.comments) {
-      if (this.timerController) {
-        this.timerController.destroy();
+    if (this.props.comments && this.props.comments !== oldProps.comments) {
+      if (this.timerManager) {
+        this.timerManager.destroy();
       }
-      this._createTimerController();
+      this._createTimerManager();
     }
   }
 
   _onReady = event => {
     this.player = event.target;
-    if (this.props.comments.getHeadNode()) {
-      if (this.timerController) {
-        this.timerController.destroy();
+    if (this.props.comments) {
+      if (this.timerManager) {
+        this.timerManager.destroy();
       }
-      this._createTimerController();
+      this._createTimerManager();
     }
-    this.props.onReady(event);
+    if (this.props.onReady) {
+      this.props.onReady(event);
+    }
   }
 
   _getShownIndex = __comment => {
@@ -99,22 +101,26 @@ export default class VideoPlayer extends React.Component {
     this.setState({ shownComments: [] });
   }
 
-  _hideComment = __comment => {
+  _hideComment = comment => {
     let newComments = this.state.shownComments.slice();
 
-    newComments.splice(newComments.indexOf(__comment), 1);
+    newComments.splice(newComments.indexOf(comment), 1);
     this.setState({ shownComments: newComments });
 
     this.props.onCommentsChanged(newComments);
   }
 
-  _addComment = __comment => {
+  _addComment = comment => {
     let newComments = this.state.shownComments.slice();
 
-    newComments.splice(this._getShownIndex(__comment), 0, __comment);
+    newComments.splice(this._getShownIndex(comment), 0, comment);
     this.setState({ shownComments: newComments });
 
     this.props.onCommentsChanged(newComments);
   }
   
+  _onCommentsChanged = newComments => {
+    this.setState({ shownComments: newComments });
+    this.props.onCommentsChanged(newComments);
+  }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import YouTube from 'react-youtube';
 import axios from 'axios';
 import CommentList from './commentList/CommentList';
+import VideoPlayer from './VideoPlayer';
 import '~/src/stylesheets/analysisView/AnalysisView.css';
 
 const API_URL = 'http://localhost:3001/api/video/';
@@ -12,7 +13,8 @@ export default class AnalysisView extends React.Component {
     const { match } = this.props;
     this.state = {
       comments: [],
-      videoPlayerVisible: false
+      videoPlayerVisible: false,
+      shownComments: []
     };
     
     this.getCommentsFromId(match.params.videoId)
@@ -42,15 +44,23 @@ export default class AnalysisView extends React.Component {
       <div className='analysisView'>
         <div className='videoContainer'>
           {this.state.videoPlayerVisible && 
-          <YouTube
+          <VideoPlayer
             videoId={videoId}
             opts={opts}
+            comments={this.state.comments}
+            onCommentsChanged={this.onCommentsChanged.bind(this)}
           />}
           {/* {this.state.commentsTimeline} */}
         </div>
-        <CommentList comments={this.state.comments}/>
+        <CommentList comments={this.state.shownComments}/>
       </div>
     );
+  }
+  
+  onCommentsChanged(newCommments) {
+    this.setState({
+      comments: newCommments
+    });
   }
   
   getCommentsFromId(videoId) {
