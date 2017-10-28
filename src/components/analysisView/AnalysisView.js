@@ -59,7 +59,7 @@ export default class AnalysisView extends React.Component {
   
   onCommentsChanged(newCommments) {
     this.setState({
-      comments: newCommments
+      shownComments: newCommments
     });
   }
   

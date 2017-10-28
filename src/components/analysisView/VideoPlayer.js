@@ -35,6 +35,7 @@ export default class VideoPlayer extends React.Component {
           onReady={this._onReady.bind(this)}
           onPause={this._onPause.bind(this)}
           onPlay={this._onPlay.bind(this)}
+          onEnd={this._onEnd.bind(this)}
           onStateChange={this._onStateChange}
         />
       </div>
@@ -44,13 +45,19 @@ export default class VideoPlayer extends React.Component {
   _onPause = event => {
     // this._clearTimers();
     if (!!this.timerManager) {
-      this.timerManager.onPause(event.target.getCurrentTime());
+      this.timerManager.pause(event.target.getCurrentTime());
     }
   }
 
   _onPlay = event => {
     if (!!this.timerManager) {
-      this.timerManager.onPlay(event.target.getCurrentTime());
+      this.timerManager.play(event.target.getCurrentTime());
+    }
+  }
+
+  _onEnd = event => {
+    if (!!this.timerManager) {
+      this.timerManager.pause(event.target.getCurrentTime());
     }
   }
 
@@ -58,7 +65,7 @@ export default class VideoPlayer extends React.Component {
     this.timerManager = new TimerManager({
       comments: this.props.comments,
       player: this.player,
-      onCommentsChanged: this._onCommentsChanged
+      onCommentsChanged: this._onCommentsChanged.bind(this)
     });
   }
 
