@@ -1,7 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 import TimerManager from '../../controllers/analysisView/TimerManager';
-import TimerController from '../../controllers/analysisView/TimerController';
 import '~/src/stylesheets/analysisView/VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
@@ -15,6 +14,13 @@ export default class VideoPlayer extends React.Component {
     this.player = null;
     this.showCommentTimer = null;
     this.clearCommentTimers = [];
+  }
+
+  onRef = ref => {
+    if (ref) {
+      // this.player = ref.internalPlayer;
+      console.log('setting ref');
+    }
   }
 
   render = () => {
@@ -36,6 +42,7 @@ export default class VideoPlayer extends React.Component {
           onPause={this._onPause.bind(this)}
           onPlay={this._onPlay.bind(this)}
           onEnd={this._onEnd.bind(this)}
+          ref={this.onRef.bind(this)}
           onStateChange={this._onStateChange}
         />
       </div>
