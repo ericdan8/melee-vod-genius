@@ -1,5 +1,4 @@
 import React from 'react';
-import YouTube from 'react-youtube';
 import axios from 'axios';
 import CommentList from './commentList/CommentList';
 import CommentTimeline from './commentTimeline/CommentTimeline';
@@ -47,7 +46,6 @@ export default class AnalysisView extends React.Component {
         <div className='videoContainer'>
           {this.state.videoPlayerVisible && 
           <VideoPlayer
-            ref={ref => console.log(ref)}
             videoId={videoId}
             opts={opts}
             comments={this.state.comments}
@@ -55,7 +53,11 @@ export default class AnalysisView extends React.Component {
             onReady={this.onVideoPlayerReady.bind(this)}
           />}
           {this.state.commentTimelineVisible &&
-          <CommentTimeline duration={this.videoPlayer.getDuration()} comments={this.state.comments}/>}
+          <CommentTimeline
+            onCommentClicked={this.onCommentClicked.bind(this)}
+            duration={this.videoPlayer.getDuration()}
+            comments={this.state.comments}
+        />}
         </div>
         <CommentList comments={this.state.shownComments}/>
       </div>
@@ -67,6 +69,10 @@ export default class AnalysisView extends React.Component {
     this.setState({
       commentTimelineVisible: true
     });
+  }
+
+  onCommentClicked(comment) {
+    this.videoPlayer.seekTo(comment.startTime, true);
   }
 
   onCommentsChanged(newCommments) {

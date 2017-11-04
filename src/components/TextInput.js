@@ -17,12 +17,17 @@ export default class TextInput extends React.Component {
     this.props.onConfirm(this.state.text);
   }
 
+  onKeyDown = event => {
+    this.props.onConfirm(this.state.text);
+  }
+
   render = () => (
     <FormGroup>
       <FormControl
         type='text'
         placeholder='Paste a YouTube URL here...'
         value={this.state.text}
+        onKeyDown={this.onKeyDown.bind(this)}
         onChange={this.onTextChange.bind(this)}
       />
       <Button bsStyle='primary' onClick={this.onButtonPress.bind(this)}>Submit URL</Button>

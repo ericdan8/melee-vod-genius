@@ -15,12 +15,19 @@ export default class CommentTimeline extends React.Component {
 
   render = () => (
     <div className='commentsTimeline'>
-      {this._rows.map(row => <CommentTimelineRow comments={row} duration={this.duration}/>)}
+      {this._rows.map(row => <CommentTimelineRow onCommentClicked={this.onCommentClicked.bind(this)} comments={row} duration={this.duration}/>)}
     </div>
   )
 
+  onCommentClicked = comment => {
+    if (this.props.onCommentClicked) {
+      this.props.onCommentClicked(comment);
+    }
+  }
+
   putCommentsIntoRows = () => {
     let rowCandidate = 0;
+    this.comments.sort((c1, c2) => c1.startTime - c2.startTime);
 
     this.comments.forEach(comment => {
       rowCandidate = 0;

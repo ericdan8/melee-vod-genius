@@ -13,16 +13,23 @@ export default class CommentTimelineRow extends React.Component {
     );
   }
 
+  onCommentClicked = comment => {
+    if (this.props.onCommentClicked) {
+      this.props.onCommentClicked(comment);
+    } else {
+      console.warn('CommentTimeline: no onCommentClicked prop passed');
+    }
+  }
+
   createRect = comment => {
     let duration = this.props.duration;
     let width = this.props.width || 640;
     let style = {
       width: ((comment.endTime - comment.startTime) / duration) * width,
       left: (comment.startTime / duration) * width,
-      background: '#008000',
-      opacity: 0.2
+      background: '#008000'
     };
 
-    return (<div className='commentRect' style={style}/>);
+    return <div className='commentRect' onClick={this.onCommentClicked.bind(this, comment)} style={style}>{comment.message}</div>;
   }
 }
