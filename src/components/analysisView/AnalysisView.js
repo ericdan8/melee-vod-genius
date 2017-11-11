@@ -10,7 +10,6 @@ const API_URL = 'http://localhost:3001/api/video/';
 export default class AnalysisView extends React.Component {
   constructor(props) {
     super(props);
-    const { match } = this.props;
     this.state = {
       comments: [],
       videoPlayerVisible: false,
@@ -18,17 +17,7 @@ export default class AnalysisView extends React.Component {
       commentsTimeline: null
     };
     
-    this.getCommentsFromId(match.params.videoId)
-    .then(commentData => {
-      this.setState({
-        comments: commentData,
-        videoPlayerVisible: true
-      });
-    })
-    .catch(err => {
-      console.error('Error retrieving comments');
-      console.error(err);
-    });
+    this.fetchComments();
   }
 
   render() {
@@ -57,11 +46,27 @@ export default class AnalysisView extends React.Component {
             onCommentClicked={this.onCommentClicked.bind(this)}
             duration={this.videoPlayer.getDuration()}
             comments={this.state.comments}
-        />}
+          />}
         </div>
         <CommentList comments={this.state.shownComments}/>
       </div>
     );
+  }
+
+  fetchComments(videoId) {
+    const { match } = this.props;
+    
+    this.getCommentsFromId(match.params.videoId)
+    .then(commentData => {
+      this.setState({
+        comments: commentData,
+        videoPlayerVisible: true
+      });
+    })
+    .catch(err => {
+      console.error('Error retrieving comments');
+      console.error(err);
+    });
   }
   
   onVideoPlayerReady(event) {

@@ -18,7 +18,9 @@ export default class TextInput extends React.Component {
   }
 
   onKeyDown = event => {
-    this.props.onConfirm(this.state.text);
+    if (event.key === 19) {
+      this.props.onConfirm(this.state.text);
+    }
   }
 
   render = () => (

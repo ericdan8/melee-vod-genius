@@ -36,15 +36,29 @@ app.get('/', (req, res, next) => {
 
 // GET a video's comments by ID
 app.get('/api/video/:videoId', (req, res, next) => {
-  Video.find({videoId: req.params.videoId})
-    .populate('comments')
-    .exec(function(err, video) {
-      if (err) {
-        res.send(err);
-      }
-      console.log('serving video ' + req.params.videoId);
-      res.json(video[0]);
-    });
+  Video.find({videoId: req.params.videoId}, function(err, video) {
+    if (err) {
+      res.send(err);
+    }
+    console.log('serving video ' + req.params.videoId);
+    if (video.length < 1) {
+      // create a new video
+      video = new Video();
+      
+      video.videoId = req.params.videoId;
+      video.comments = [];
+      video.save(function(err, newVideo) {
+        // do stuff with the updated video
+        console.log('created new' + req.param.videoId);
+        res.json(newVideo);
+      });
+    } else {
+      // serve an existing video
+      video[0].populate('comments', function(err, vid) {
+        res.json(video[0]);
+      });
+    }
+  });
 });
 
 app.post('/api/video/:videoId', (req, res, next) => {
@@ -52,7 +66,7 @@ app.post('/api/video/:videoId', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    console.log('adding comment to video ' + req.params.videoId);
+    console.log('created new video ' + req.params.videoId);
     var newCommentData = JSON.parse(req.query.newComment);
     var newComment = new Comment(newCommentData);
 
@@ -61,9 +75,13 @@ app.post('/api/video/:videoId', (req, res, next) => {
     // first comment on a particular video 
     if (video.length < 1) {
       video = new Video();
-      
       video.videoId = req.params.videoId;
       video.comments = [newComment._id];
+      video.save(function(err, newVideo) {
+        // do stuff with the updated video
+        console.log('created new' + req.param.videoId);
+        res.json(newVideo);
+      });
     }
     else {
       video = video[0];

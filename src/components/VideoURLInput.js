@@ -16,7 +16,7 @@ export default class VideoURLInput extends React.Component {
 
   render() {
     return (
-      <div className='videoIDInput'>
+      <div className='videoIdInput'>
         <TextInput defaultValue='https://www.youtube.com/watch?v=2g811Eo7K8U' onConfirm={this.onGetVideoID.bind(this)}/>
       </div>
     );

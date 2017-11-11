@@ -9,13 +9,18 @@ export default class CommentTimeline extends React.Component {
     this.width = this.props.width || 640;
     this.duration = this.props.duration;
     this.comments = this.props.comments;
-    this._rows = [[]];
+    this._rows = [];
     this.putCommentsIntoRows();
   }
 
   render = () => (
     <div className='commentsTimeline'>
-      {this._rows.map(row => <CommentTimelineRow onCommentClicked={this.onCommentClicked.bind(this)} comments={row} duration={this.duration}/>)}
+      {this._rows.length > 0 ? this._rows.map(row =>
+      <CommentTimelineRow
+        onCommentClicked={this.onCommentClicked.bind(this)}
+        comments={row}
+        duration={this.duration}/>
+      ) : 'No comments for this video yet :('}
     </div>
   )
 

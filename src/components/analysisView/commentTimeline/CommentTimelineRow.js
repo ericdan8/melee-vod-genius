@@ -26,8 +26,7 @@ export default class CommentTimelineRow extends React.Component {
     let width = this.props.width || 640;
     let style = {
       width: ((comment.endTime - comment.startTime) / duration) * width,
-      left: (comment.startTime / duration) * width,
-      background: '#008000'
+      left: (comment.startTime / duration) * width
     };
 
     return <div className='commentRect' onClick={this.onCommentClicked.bind(this, comment)} style={style}>{comment.message}</div>;
