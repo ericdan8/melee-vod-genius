@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,gBAAiB;EACf,UAAU,EAAE,QAAQ;EACpB,OAAO,EAAE,cAAc",
-"sources": ["../../components/analysisView/VideoPlayer.scss"],
-"names": [],
-"file": "VideoPlayer.css"
-}

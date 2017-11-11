@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,iBAAkB;EAChB,OAAO,EAAE,IAAI;EACb,cAAc,EAAE,MAAM",
-"sources": ["../../../components/analysisView/commentTimeline/CommentTimeline.scss"],
-"names": [],
-"file": "CommentTimeline.css"
-}
