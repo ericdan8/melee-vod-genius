@@ -3,6 +3,7 @@ import axios from 'axios';
 import CommentList from './commentList/CommentList';
 import CommentTimeline from './commentTimeline/CommentTimeline';
 import VideoPlayer from './VideoPlayer';
+import DraggableRange from '../DraggableRange';
 import '~/src/stylesheets/analysisView/AnalysisView.css';
 
 const API_URL = 'http://localhost:3001/api/video/';
@@ -41,6 +42,7 @@ export default class AnalysisView extends React.Component {
             onCommentsChanged={this.onCommentsChanged.bind(this)}
             onReady={this.onVideoPlayerReady.bind(this)}
           />}
+          <DraggableRange/>
           {this.state.commentTimelineVisible &&
           <CommentTimeline
             onCommentClicked={this.onCommentClicked.bind(this)}

@@ -1,0 +1,21 @@
+.draggableRange {
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+  .handle {
+    position: absolute;
+    height: 30px;
+    background-color: rebeccapurple;
+  }
+  .content {
+    position: absolute;
+    height: 30px;
+    background-color: green;
+  }
+  .leftHandle {
+
+  }
+  .rightHandle {
+
+  }
+}
