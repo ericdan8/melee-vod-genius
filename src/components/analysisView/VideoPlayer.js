@@ -4,8 +4,8 @@ import TimerManager from '../../controllers/analysisView/TimerManager';
 import '~/src/stylesheets/analysisView/VideoPlayer.css';
 
 export default class VideoPlayer extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       videoId: '',

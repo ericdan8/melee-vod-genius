@@ -8,68 +8,94 @@ export default class DraggableRange extends React.Component {
       left: 0,
       right: 50
     };
-    if (props.gridSize) {
-      this.gridSize = props.gridSize;
-    }
+    this.gridSize = props.gridSize || 25;
+    this.dragData = null;
   }
+
+  roundPosition = position => Math.round(position / this.gridSize) * this.gridSize;
 
   onDragStartLeft = event => {
     console.log('drag started');
-  }
-
-  onDragEndLeft = event => {
-    this.updatePosition({
+    this.dragData = {
       handle: 'left',
-      position: event.clientX
-    });
+      startX: this.state.left
+    };
+    if (this.props.onDragStart) {
+      this.props.onDragStart({
+        handle: 'left',
+        startX: this.state.left
+      });
+    }
   }
-
-  onDragLeft = event => {
-    console.log(event.clientX);
-    this.updatePosition({
-      handle: 'left',
-      position: event.clientX
-    });
-  }
-
+  
   onDragStartRight = event => {
     console.log('drag started');
+    this.dragData = {
+      handle: 'right',
+      startX: this.state.left
+    };
+    if (this.props.onDragStart) {
+      this.props.onDragStart({
+        handle: 'right',
+        startX: this.state.right
+      });
+    }
   }
 
-  onDragEndRight = event => {
+  onDragEnd = event => {
     this.updatePosition({
-      handle: 'right',
+      handle: this.dragData.handle,
       position: event.clientX
+    }, () => {
+      if (this.props.onDragEnd) {
+        this.props.onDragEnd({
+          handle: this.dragData.handle,
+          endX: this.state.left
+        });
+      }
+      this.dragData = null;
     });
   }
 
-  onDragRight = event => {
+  onDrag = event => {
     console.log(event.clientX);
-    this.updatePosition({
-      handle: 'right',
-      position: event.clientX
-    });
+    if (this.dragData) {
+      this.updatePosition({
+        handle: this.dragData.handle,
+        position: event.clientX
+      }, () => {
+        if (this.props.onDrag && this.dragData) {
+          this.props.onDrag({
+            handle: this.dragData.handle,
+            posX: this.state[this.dragData.handle]
+          });
+        }
+      });
+    }
   }
 
-  updatePosition = drag => {
+  updatePosition = (drag, callback) => {
     if (drag.handle && drag.position) {
-      switch (drag.handle) {
-      case 'left':
-        if (drag.position < this.state.right) {
-          this.setState({
-            left: drag.position
-          });
+      var roundedPosition = this.roundPosition(drag.position);
+      if (roundedPosition !== this.state[drag.handle]) {
+        switch (drag.handle) {
+        case 'left':
+          if (roundedPosition < this.state.right) {
+            this.setState({
+              left: roundedPosition
+            }, callback);
+          }
+          break;
+        case 'right':
+          if (roundedPosition > this.state.left) {
+            this.setState({
+              right: roundedPosition
+            }, callback);
+          }
+          break;
+        default:
+          break;
         }
-        break;
-      case 'right':
-        if (drag.position > this.state.left) {
-          this.setState({
-            right: drag.position
-          });
-        }
-        break;
-      default:
-        break;
       }
     }
   }
@@ -94,15 +120,15 @@ export default class DraggableRange extends React.Component {
           draggable 
           style={leftHandleStyle} 
           onDragStart={this.onDragStartLeft} 
-          onDrag={this.onDragLeft} 
-          onDragEnd={this.onDragEndLeft}/>
+          onDrag={this.onDrag} 
+          onDragEnd={this.onDragEnd}/>
         <div className='content' style={contentStyle}/>
         <div className='rightHandle handle'
           draggable
           style={rightHandleStyle}
           onDragStart={this.onDragStartRight} 
-          onDrag={this.onDragRight}
-          onDragEnd={this.onDragEndRight}/>
+          onDrag={this.onDrag}
+          onDragEnd={this.onDragEnd}/>
       </div>
     );
   }
