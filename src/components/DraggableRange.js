@@ -50,7 +50,7 @@ export default class DraggableRange extends React.Component {
       if (this.props.onDragEnd) {
         this.props.onDragEnd({
           handle: this.dragData.handle,
-          endX: this.state.left
+          endX: this.state[this.dragData.handle]
         });
       }
       this.dragData = null;
@@ -78,6 +78,7 @@ export default class DraggableRange extends React.Component {
     if (drag.handle && drag.position) {
       var roundedPosition = this.roundPosition(drag.position);
       if (roundedPosition !== this.state[drag.handle]) {
+        console.log('updating ' + this.dragData.handle + ' with ' + roundedPosition);
         switch (drag.handle) {
         case 'left':
           if (roundedPosition < this.state.right) {

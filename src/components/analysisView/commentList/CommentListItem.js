@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Panel } from 'react-bootstrap';
-// import './CommentListItem.css';
 import '~/src/stylesheets/analysisView/commentList/CommentListItem.css';
 
 export default class CommentListItem extends React.Component {

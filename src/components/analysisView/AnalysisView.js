@@ -4,6 +4,8 @@ import CommentList from './commentList/CommentList';
 import CommentTimeline from './commentTimeline/CommentTimeline';
 import VideoPlayer from './VideoPlayer';
 import DraggableRange from '../DraggableRange';
+import CommentForm from './CommentForm';
+import { Button } from 'react-bootstrap';
 import '~/src/stylesheets/analysisView/AnalysisView.css';
 
 const API_URL = 'http://localhost:3001/api/video/';
@@ -15,9 +17,12 @@ export default class AnalysisView extends React.Component {
       comments: [],
       videoPlayerVisible: false,
       shownComments: [],
-      commentsTimeline: null
+      commentsTimeline: null,
+      addCommentMode: false
     };
-    
+  }
+  
+  componentWillMount() {
     this.fetchComments();
   }
 
@@ -34,6 +39,7 @@ export default class AnalysisView extends React.Component {
     return (
       <div className='analysisView'>
         <div className='videoContainer'>
+          <Button bsStyle='primary' onClick={this.toggleAddCommentMode.bind(this)}>Add comment</Button>
           {this.state.videoPlayerVisible && 
           <VideoPlayer
             videoId={videoId}
@@ -41,8 +47,12 @@ export default class AnalysisView extends React.Component {
             comments={this.state.comments}
             onCommentsChanged={this.onCommentsChanged.bind(this)}
             onReady={this.onVideoPlayerReady.bind(this)}
+            addCommentMode={this.state.addCommentMode}
           />}
-          <DraggableRange/>
+          {this.state.addCommentMode && 
+          <DraggableRange
+            gridSize={25}
+          />}
           {this.state.commentTimelineVisible &&
           <CommentTimeline
             onCommentClicked={this.onCommentClicked.bind(this)}
@@ -50,9 +60,23 @@ export default class AnalysisView extends React.Component {
             comments={this.state.comments}
           />}
         </div>
+        {this.state.addCommentMode &&
+        <CommentForm
+          onSubmit={this.onCommentSubmitClicked.bind(this)}
+        />}
         <CommentList comments={this.state.shownComments}/>
       </div>
     );
+  }
+
+  onCommentSubmitClicked(event) {
+    
+  }
+
+  toggleAddCommentMode() {
+    this.setState({
+      addCommentMode: !this.state.addCommentMode
+    });
   }
 
   fetchComments(videoId) {
