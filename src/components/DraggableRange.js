@@ -19,7 +19,6 @@ export default class DraggableRange extends React.Component {
   }
 
   onDragStartLeft = event => {
-    console.log('drag started');
     this.dragData = {
       handle: 'left',
       startX: this.state.left
@@ -33,7 +32,6 @@ export default class DraggableRange extends React.Component {
   }
   
   onDragStartRight = event => {
-    console.log('drag started');
     this.dragData = {
       handle: 'right',
       startX: this.state.left
@@ -58,7 +56,7 @@ export default class DraggableRange extends React.Component {
         });
       }
       this.dragData = null;
-    });
+    }, true);
   }
 
   onDrag = event => {
@@ -77,7 +75,7 @@ export default class DraggableRange extends React.Component {
     }
   }
 
-  updatePosition = (drag, callback) => {
+  updatePosition = (drag, callback, forceCallback) => {
     if (drag.handle && drag.position) {
       var roundedPosition = this.roundPosition(drag.position);
       if (roundedPosition !== this.state[drag.handle]) {
@@ -100,7 +98,7 @@ export default class DraggableRange extends React.Component {
         default:
           break;
         }
-      } else if (callback) callback();
+      } else if (forceCallback) callback();
     }
   }
 

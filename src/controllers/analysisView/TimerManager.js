@@ -60,10 +60,10 @@ export default class TimerManager {
 
   _step = () => {
     let targetTime = Date.now() - this._startTime;
-    console.log('target ' + targetTime);
+    // console.log('target ' + targetTime);
     if (this._startTime) {
       while (this._time < targetTime) {
-        console.log('stepping ' + this._time);
+        // console.log('stepping ' + this._time);
         this._executeTick(this._time);
         this._time += this._tickLength;
       }

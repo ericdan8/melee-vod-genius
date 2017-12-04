@@ -16,13 +16,6 @@ export default class VideoPlayer extends React.Component {
     this.clearCommentTimers = [];
   }
 
-  onRef = ref => {
-    if (ref) {
-      // this.player = ref.internalPlayer;
-      console.log('setting ref');
-    }
-  }
-
   render = () => {
     const opts = {
       height: '390',
@@ -42,7 +35,6 @@ export default class VideoPlayer extends React.Component {
           onPause={this._onPause.bind(this)}
           onPlay={this._onPlay.bind(this)}
           onEnd={this._onEnd.bind(this)}
-          ref={this.onRef.bind(this)}
           onStateChange={this._onStateChange}
         />
       </div>

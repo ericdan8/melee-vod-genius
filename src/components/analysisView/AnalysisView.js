@@ -58,6 +58,7 @@ export default class AnalysisView extends React.Component {
             initialLeft={50}
             initialRight={100}
             onDragEnd={this.onDragEnd.bind(this)}
+            onDrag={this.onDrag.bind(this)}
           />}
           {this.state.commentTimelineVisible &&
           <CommentTimeline
@@ -79,6 +80,10 @@ export default class AnalysisView extends React.Component {
     this.setState({
       [event.handle + 'Handle']: event.position
     }, () => console.log(event.handle + ' ' + this.state[event.handle + 'Handle']));
+  }
+
+  onDrag(event) {
+    // TODO: seek to the time indicated by the drag
   }
 
   onCommentSubmitClicked(event) {
