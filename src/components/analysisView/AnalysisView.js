@@ -18,7 +18,9 @@ export default class AnalysisView extends React.Component {
       videoPlayerVisible: false,
       shownComments: [],
       commentsTimeline: null,
-      addCommentMode: false
+      addCommentMode: false,
+      leftHandle: 0,
+      rightHandle: 50
     };
   }
   
@@ -53,6 +55,9 @@ export default class AnalysisView extends React.Component {
           <DraggableRange
             gridSize={25}
             maxWidth={640}
+            initialLeft={50}
+            initialRight={100}
+            onDragEnd={this.onDragEnd.bind(this)}
           />}
           {this.state.commentTimelineVisible &&
           <CommentTimeline
@@ -68,6 +73,12 @@ export default class AnalysisView extends React.Component {
         <CommentList comments={this.state.shownComments}/>
       </div>
     );
+  }
+
+  onDragEnd(event) {
+    this.setState({
+      [event.handle + 'Handle']: event.position
+    }, () => console.log(event.handle + ' ' + this.state[event.handle + 'Handle']));
   }
 
   onCommentSubmitClicked(event) {

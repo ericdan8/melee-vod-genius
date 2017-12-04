@@ -5,8 +5,8 @@ export default class DraggableRange extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      left: 0,
-      right: 50
+      left: props.initialLeft || 0,
+      right: props.initialRight || 50
     };
     this.gridSize = props.gridSize || 25;
     this.maxWidth = props.maxWidth;
@@ -54,7 +54,7 @@ export default class DraggableRange extends React.Component {
       if (this.props.onDragEnd) {
         this.props.onDragEnd({
           handle: this.dragData.handle,
-          endX: this.state[this.dragData.handle]
+          position: this.state[this.dragData.handle]
         });
       }
       this.dragData = null;
@@ -62,7 +62,6 @@ export default class DraggableRange extends React.Component {
   }
 
   onDrag = event => {
-    console.log(event.clientX);
     if (this.dragData) {
       this.updatePosition({
         handle: this.dragData.handle,
@@ -71,7 +70,7 @@ export default class DraggableRange extends React.Component {
         if (this.props.onDrag && this.dragData) {
           this.props.onDrag({
             handle: this.dragData.handle,
-            posX: this.state[this.dragData.handle]
+            position: this.state[this.dragData.handle]
           });
         }
       });
@@ -82,7 +81,7 @@ export default class DraggableRange extends React.Component {
     if (drag.handle && drag.position) {
       var roundedPosition = this.roundPosition(drag.position);
       if (roundedPosition !== this.state[drag.handle]) {
-        console.log('updating ' + this.dragData.handle + ' with ' + roundedPosition);
+        // console.log('updating ' + this.dragData.handle + ' with ' + roundedPosition);
         switch (drag.handle) {
         case 'left':
           if (roundedPosition < this.state.right) {
@@ -101,7 +100,7 @@ export default class DraggableRange extends React.Component {
         default:
           break;
         }
-      }
+      } else if (callback) callback();
     }
   }
 
