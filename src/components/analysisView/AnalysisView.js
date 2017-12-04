@@ -52,6 +52,7 @@ export default class AnalysisView extends React.Component {
           {this.state.addCommentMode && 
           <DraggableRange
             gridSize={25}
+            maxWidth={640}
           />}
           {this.state.commentTimelineVisible &&
           <CommentTimeline
@@ -70,7 +71,7 @@ export default class AnalysisView extends React.Component {
   }
 
   onCommentSubmitClicked(event) {
-    
+    //TODO: get the start and end time from the draggable range
   }
 
   toggleAddCommentMode() {

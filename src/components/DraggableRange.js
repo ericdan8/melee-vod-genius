@@ -9,10 +9,14 @@ export default class DraggableRange extends React.Component {
       right: 50
     };
     this.gridSize = props.gridSize || 25;
+    this.maxWidth = props.maxWidth;
     this.dragData = null;
   }
 
-  roundPosition = position => Math.round(position / this.gridSize) * this.gridSize;
+  roundPosition = position => {
+    var roundedPos = Math.round(position / this.gridSize) * this.gridSize;
+    return Math.max(Math.min(roundedPos, this.maxWidth), 0);
+  }
 
   onDragStartLeft = event => {
     console.log('drag started');
