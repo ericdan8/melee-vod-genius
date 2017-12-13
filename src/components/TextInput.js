@@ -8,6 +8,19 @@ export default class TextInput extends React.Component {
       text: this.props.defaultValue || ''
     };
   }
+  
+  render = () => (
+    <FormGroup>
+      <FormControl
+        type='text'
+        placeholder='Paste a YouTube URL here...'
+        value={this.state.text}
+        onKeyDown={this.onKeyDown}
+        onChange={this.onTextChange}
+        />
+      <Button bsStyle='primary' onClick={this.onButtonPress}>{this.props.buttonLabel}</Button>
+    </FormGroup>
+  )
 
   onTextChange = event => {
     this.setState({text: event.target.value});
@@ -22,17 +35,4 @@ export default class TextInput extends React.Component {
       this.props.onConfirm(this.state.text);
     }
   }
-
-  render = () => (
-    <FormGroup>
-      <FormControl
-        type='text'
-        placeholder='Paste a YouTube URL here...'
-        value={this.state.text}
-        onKeyDown={this.onKeyDown.bind(this)}
-        onChange={this.onTextChange.bind(this)}
-      />
-      <Button bsStyle='primary' onClick={this.onButtonPress.bind(this)}>{this.props.buttonLabel}</Button>
-    </FormGroup>
-  )
 }

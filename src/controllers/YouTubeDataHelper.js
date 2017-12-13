@@ -5,7 +5,7 @@ var API_ENDPOINT = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id
 
 
 var YouTubeDataHelper = {
-  getVideoDataById: async function(id) {
+  getVideoDataById: function(id) {
     return new Promise((resolve, reject) => {
       axios.get(this._getUrl(id))
         .then(res => resolve(res.data.items[0]))

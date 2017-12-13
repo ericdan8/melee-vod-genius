@@ -42,14 +42,14 @@ export default class AnalysisView extends React.Component {
       <div className='analysisView'>
         <div className='videoContainer'>
           {this.state.videoPlayerVisible && 
-          <Button bsStyle='primary' onClick={this.toggleAddCommentMode.bind(this)}>Add comment</Button>}
+          <Button bsStyle='primary' onClick={this.toggleAddCommentMode}>Add comment</Button>}
           {this.state.videoPlayerVisible && 
           <VideoPlayer
             videoId={videoId}
             opts={opts}
             comments={this.state.comments}
-            onCommentsChanged={this.onCommentsChanged.bind(this)}
-            onReady={this.onVideoPlayerReady.bind(this)}
+            onCommentsChanged={this.onCommentsChanged}
+            onReady={this.onVideoPlayerReady}
             addCommentMode={this.state.addCommentMode}
           />}
           {this.state.addCommentMode && 
@@ -58,46 +58,46 @@ export default class AnalysisView extends React.Component {
             maxWidth={640}
             initialLeft={50}
             initialRight={100}
-            onDragEnd={this.onDragEnd.bind(this)}
-            onDrag={this.onDrag.bind(this)}
+            onDragEnd={this.onDragEnd}
+            onDrag={this.onDrag}
           />}
           {this.state.commentTimelineVisible &&
           <CommentTimeline
-            onCommentClicked={this.onCommentClicked.bind(this)}
+            onCommentClicked={this.onCommentClicked}
             duration={this.videoPlayer.getDuration()}
             comments={this.state.comments}
           />}
         </div>
         {this.state.addCommentMode &&
         <CommentForm
-          onSubmit={this.onCommentSubmitClicked.bind(this)}
+          onSubmit={this.onCommentSubmitClicked}
         />}
         <CommentList comments={this.state.shownComments}/>
       </div>
     );
   }
 
-  onDragEnd(event) {
+  onDragEnd = event => {
     this.setState({
       [event.handle + 'Handle']: event.position
     }, () => console.log(event.handle + ' ' + this.state[event.handle + 'Handle']));
   }
 
-  onDrag(event) {
+  onDrag = event => {
     // TODO: seek to the time indicated by the drag
   }
 
-  onCommentSubmitClicked(event) {
+  onCommentSubmitClicked = event => {
     //TODO: get the start and end time from the draggable range
   }
 
-  toggleAddCommentMode() {
+  toggleAddCommentMode = () => {
     this.setState({
       addCommentMode: !this.state.addCommentMode
     });
   }
 
-  fetchComments(videoId) {
+  fetchComments = videoId => {
     const { match } = this.props;
     
     this.getCommentsFromId(match.params.videoId)
@@ -113,24 +113,24 @@ export default class AnalysisView extends React.Component {
     });
   }
   
-  onVideoPlayerReady(event) {
+  onVideoPlayerReady = event => {
     this.videoPlayer = event.target;
     this.setState({
       commentTimelineVisible: true
     });
   }
 
-  onCommentClicked(comment) {
+  onCommentClicked = comment => {
     this.videoPlayer.seekTo(comment.startTime, true);
   }
 
-  onCommentsChanged(newCommments) {
+  onCommentsChanged = newCommments => {
     this.setState({
       shownComments: newCommments
     });
   }
   
-  getCommentsFromId(videoId) {
+  getCommentsFromId = videoId => {
     return new Promise((resolve, reject) => {
       axios.get(API_URL + videoId)
         .then(res => resolve(res.data.comments))

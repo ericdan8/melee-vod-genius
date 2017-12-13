@@ -31,10 +31,10 @@ export default class VideoPlayer extends React.Component {
         <YouTube
           videoId={videoId}
           opts={opts}
-          onReady={this._onReady.bind(this)}
-          onPause={this._onPause.bind(this)}
-          onPlay={this._onPlay.bind(this)}
-          onEnd={this._onEnd.bind(this)}
+          onReady={this._onReady}
+          onPause={this._onPause}
+          onPlay={this._onPlay}
+          onEnd={this._onEnd}
           onStateChange={this._onStateChange}
         />
       </div>
@@ -64,7 +64,7 @@ export default class VideoPlayer extends React.Component {
     this.timerManager = new TimerManager({
       comments: this.props.comments,
       player: this.player,
-      onCommentsChanged: this._onCommentsChanged.bind(this)
+      onCommentsChanged: this._onCommentsChanged
     });
   }
 

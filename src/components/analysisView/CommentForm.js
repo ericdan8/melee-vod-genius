@@ -21,23 +21,23 @@ export default class CommentForm extends React.Component {
             type="text"
             value={this.state.message}
             placeholder="Enter text"
-            onChange={this.onMessageChange.bind(this)}
+            onChange={this.onMessageChange}
           />
         </FormGroup>
-        <Button type="submit" onClick={this.onSubmit.bind(this)}>
+        <Button type="submit" onClick={this.onSubmit}>
           Submit
         </Button>
       </div>
     );
   }
 
-  onMessageChange(event) {
+  onMessageChange = event => {
     this.setState({
       message: event.target.value
     });
   }
 
-  onSubmit(event) {
+  onSubmit = event => {
     if (this.props.onSubmit) {
       this.props.onSubmit({
         message: this.state.message

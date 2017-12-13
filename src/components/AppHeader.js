@@ -9,10 +9,6 @@ export default class AppHeader extends React.Component {
     };
   }
 
-  onHeaderClick() {
-    this.props.history.replace('/');
-  }
-
   render() {
     const videoShown = !!this.props.match && !!this.props.match.params.videoId;
     if (videoShown) {
@@ -21,10 +17,14 @@ export default class AppHeader extends React.Component {
   
     return (
       <div className={videoShown ? 'App-header videoShown' : 'App-header'}>
-        <h2 onClick={this.onHeaderClick.bind(this)}>{this.state.titleText}</h2>
+        <h2 onClick={this.onHeaderClick}>{this.state.titleText}</h2>
         {!this.props.match && 
         <h3>Paste a YouTube URL to get started</h3>}
       </div>
-    );    
+    );
+  }
+
+  onHeaderClick = () => {
+    this.props.history.replace('/');
   }
 }

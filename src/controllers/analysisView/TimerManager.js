@@ -23,7 +23,7 @@ export default class TimerManager {
       clearInterval(this._timer);
       this._timer = null;
     }
-    this._timer = setInterval(this._step.bind(this), this._tickLength * (1/this.player.getPlaybackRate()));
+    this._timer = setInterval(this._step, this._tickLength * (1/this.player.getPlaybackRate()));
     this._startTime = this._roundTime(Date.now()) - this._time;
     console.log(this._startTime);
   }
