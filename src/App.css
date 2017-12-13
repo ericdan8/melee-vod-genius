@@ -11,12 +11,18 @@
 }
 
 .App-header {
-  flex: 1;
-  background-color: #222;
+  background-color: #AEA8D3;
   height: 150px;
   width: 100%;
-  padding: 20px;
   color: white;
+  text-align: center;
+  padding-left: 15px;
+  transition: height 200ms;
+}
+
+.App-header.videoShown {
+  text-align: left;
+  height: 80px;
 }
 
 .App-intro {

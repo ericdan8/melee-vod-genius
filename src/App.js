@@ -11,51 +11,36 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      videoId: '',
-      comments: new LinkedList(),
-      shownComments: [],
-      videoPlayer: null,
-      commentsTimeline: null
+      videoId: ''
     };
-    this.commentDB = null;
   }
 
-  _onCommentsChanged = newComments => {
-    this.setState({shownComments: newComments});
+  onGetVideoId = (videoId, history) => {
+    history.push('/video/' + videoId);
+    this.setState({videoId});
   }
 
-  _onPlayerReady = event => {
-    // let commentsTimeline = <CommentsTimeline width={parseInt(event.target.a.width, 10)} duration={event.target.getDuration()} comments={this.state.comments} />
-    // this.setState({commentsTimeline})
-  }
-  
-  buildPlayer = options => (
-    <VideoPlayer className='videoPlayer'
-      videoId={options.videoId}
-      comments={options.comments}
-      onCommentsChanged={this._onCommentsChanged.bind(this)}
-      onReady={this._onPlayerReady.bind(this)}
-    />
-  )
-
-  buildComments = comments => {
-    let list = new LinkedList();
-    comments.sort((a, b) => a.startTime - b.startTime);
-    comments.forEach(list.insert, list);
-    return list;
+  onHeaderClick = () => {
+    this.props.history.replace('/');
+    this.setState({videoId: ''});    
   }
 
-  render = () => (
-    <Router>
-      <div className='App'>
-        <div className='App-header'>
-          <h2>VOD Genius</h2>
+  render = () => {
+    return (
+      <Router>
+        <div className='App'>
+          <Route path='/video/:videoId' children={(props) =>
+            <div className={props.match && props.match.params.videoId ? 'App-header videoShown' : 'App-header'}>
+              <h2 onClick={() => props.history.replace('/')}>VOD Genius</h2>
+              {props}
+            </div>}
+          />
+          <Route exact path='/:path(|video)' render={props => <VideoURLInput {...props} onGetVideoId={this.onGetVideoId}/>}/>
+          <Route path='/video/:videoId' render={props => <AnalysisView {...props}/>}/>
         </div>
-        <Route exact path='/' component={VideoURLInput}/>
-        <Route path='/video/:videoId' component={AnalysisView}/>
-      </div>
-    </Router>
-  );
+      </Router>
+    );
+  }
 }
 
 export default App;

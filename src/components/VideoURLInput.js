@@ -10,7 +10,9 @@ export default class VideoURLInput extends React.Component {
 
     if (matches && matches[1]) {
       videoId = matches[1];
-      this.props.history.push('/video/' + videoId);
+      if (this.props.onGetVideoId) {
+        this.props.onGetVideoId(videoId, this.props.history);
+      }
     }
   }
 
