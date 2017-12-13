@@ -32,7 +32,7 @@ export default class TextInput extends React.Component {
         onKeyDown={this.onKeyDown.bind(this)}
         onChange={this.onTextChange.bind(this)}
       />
-      <Button bsStyle='primary' onClick={this.onButtonPress.bind(this)}>Submit URL</Button>
+      <Button bsStyle='primary' onClick={this.onButtonPress.bind(this)}>{this.props.buttonLabel}</Button>
     </FormGroup>
   )
 }

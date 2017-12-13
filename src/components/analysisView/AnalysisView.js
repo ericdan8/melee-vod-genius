@@ -41,7 +41,8 @@ export default class AnalysisView extends React.Component {
     return (
       <div className='analysisView'>
         <div className='videoContainer'>
-          <Button bsStyle='primary' onClick={this.toggleAddCommentMode.bind(this)}>Add comment</Button>
+          {this.state.videoPlayerVisible && 
+          <Button bsStyle='primary' onClick={this.toggleAddCommentMode.bind(this)}>Add comment</Button>}
           {this.state.videoPlayerVisible && 
           <VideoPlayer
             videoId={videoId}
@@ -132,7 +133,7 @@ export default class AnalysisView extends React.Component {
   getCommentsFromId(videoId) {
     return new Promise((resolve, reject) => {
       axios.get(API_URL + videoId)
-      .then(res => resolve(res.data.comments))
+        .then(res => resolve(res.data.comments))
         .catch(err => reject(err));
     });
   }

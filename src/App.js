@@ -4,6 +4,7 @@ import LinkedList from 'dbly-linked-list';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import AnalysisView from './components/analysisView/AnalysisView';
 import VideoURLInput from './components/VideoURLInput';
+import AppHeader from './components/AppHeader';
 import './App.css';
 // https://www.youtube.com/watch?v=2g811Eo7K8U
 
@@ -29,12 +30,7 @@ class App extends Component {
     return (
       <Router>
         <div className='App'>
-          <Route path='/video/:videoId' children={(props) =>
-            <div className={props.match && props.match.params.videoId ? 'App-header videoShown' : 'App-header'}>
-              <h2 onClick={() => props.history.replace('/')}>VOD Genius</h2>
-              {props}
-            </div>}
-          />
+          <Route children={props => <AppHeader {...this.state.videoId} {...props}/>}/>
           <Route exact path='/:path(|video)' render={props => <VideoURLInput {...props} onGetVideoId={this.onGetVideoId}/>}/>
           <Route path='/video/:videoId' render={props => <AnalysisView {...props}/>}/>
         </div>
