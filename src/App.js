@@ -21,16 +21,11 @@ class App extends Component {
     this.setState({videoId});
   }
 
-  onHeaderClick = () => {
-    this.props.history.replace('/');
-    this.setState({videoId: ''});    
-  }
-
   render = () => {
     return (
       <Router>
         <div className='App'>
-          <Route children={props => <AppHeader {...this.state.videoId} {...props}/>}/>
+          <Route path='/video/:videoId' children={props => <AppHeader {...props}/>}/>
           <Route exact path='/:path(|video)' render={props => <VideoURLInput {...props} onGetVideoId={this.onGetVideoId}/>}/>
           <Route path='/video/:videoId' render={props => <AnalysisView {...props}/>}/>
         </div>
