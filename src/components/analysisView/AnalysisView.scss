@@ -1,6 +1,11 @@
 .analysisView {
   display: flex;
   flex-direction: row;
+  .addCommentButton {
+    margin-bottom: 15px;
+    max-width: 150px;
+    align-self: center;
+  }
   .videoContainer {
     margin: 25px 50px;
     display: flex;

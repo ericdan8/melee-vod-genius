@@ -42,7 +42,7 @@ export default class AnalysisView extends React.Component {
       <div className='analysisView'>
         <div className='videoContainer'>
           {this.state.videoPlayerVisible && 
-          <Button bsStyle='primary' onClick={this.toggleAddCommentMode}>Add comment</Button>}
+          <Button className='addCommentButton' bsStyle='default' onClick={this.toggleAddCommentMode}>Add comment</Button>}
           {this.state.videoPlayerVisible && 
           <VideoPlayer
             videoId={videoId}
