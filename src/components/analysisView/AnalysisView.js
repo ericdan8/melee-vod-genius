@@ -21,6 +21,8 @@ export default class AnalysisView extends React.Component {
       leftHandle: 0,
       rightHandle: 50
     };
+    this.videoWidth = props.videoWidth || 640;
+    this.videoHeight = props.videoHeight || 390;
   }
   
   componentWillMount() {
@@ -29,8 +31,8 @@ export default class AnalysisView extends React.Component {
 
   render() {
     const opts = {
-      height: '390',
-      width: '640',
+      height: this.videoHeight,
+      width: this.videoWidth,
       playerVars: { // https://developers.google.com/youtube/player_parameters
         autoplay: 0
       }
@@ -51,6 +53,7 @@ export default class AnalysisView extends React.Component {
             onReady={this.onVideoPlayerReady}
             addCommentMode={this.state.addCommentMode}
           />}
+          {this._convertPositionToTime(this.state.leftHandle)}
           {this.state.addCommentMode && 
           <DraggableRange
             gridSize={25}
@@ -87,6 +90,7 @@ export default class AnalysisView extends React.Component {
     this.setState({
       [event.handle + 'Handle']: event.position
     });
+    this.videoPlayer.seekTo(this._convertPositionToTime(event.position));
   }
 
   onCommentSubmitClicked = event => {
@@ -139,4 +143,6 @@ export default class AnalysisView extends React.Component {
         .catch(err => reject(err));
     });
   }
+
+  _convertPositionToTime = position => this.videoPlayer && (position / (this.videoWidth)) * this.videoPlayer.getDuration();
 }

@@ -20,12 +20,12 @@ export default class DraggableRange extends React.Component {
       handle: 'left',
       startX: this.roundPosition(event.clientX)
     };
-    // if (this.props.onDragStart) {
-    //   this.props.onDragStart({
-    //     handle: 'left',
-    //     startX: this.state.left
-    //   });
-    // }
+    if (this.props.onDragStart) {
+      this.props.onDragStart({
+        handle: 'left',
+        startX: this.state.left
+      });
+    }
   }
   
   onDragStartRight = event => {
@@ -33,12 +33,12 @@ export default class DraggableRange extends React.Component {
       handle: 'right',
       startX: this.roundPosition(event.clientX)
     };
-    // if (this.props.onDragStart) {
-    //   this.props.onDragStart({
-    //     handle: 'right',
-    //     startX: this.state.right
-    //   });
-    // }
+    if (this.props.onDragStart) {
+      this.props.onDragStart({
+        handle: 'right',
+        startX: this.state.right
+      });
+    }
   }
 
   onDragEnd = event => {
@@ -92,8 +92,7 @@ export default class DraggableRange extends React.Component {
   }
 
   render() {
-    let left = this.props.left || this.state.left;
-    let right = this.props.right || this.state.right;
+    const { left, right } = this.state;
     const leftHandleStyle = {
       left: left + 'px',
       width: '10px'
