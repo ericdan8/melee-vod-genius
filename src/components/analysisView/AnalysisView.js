@@ -17,7 +17,6 @@ export default class AnalysisView extends React.Component {
       comments: [],
       videoPlayerVisible: false,
       shownComments: [],
-      commentsTimeline: null,
       addCommentMode: false,
       leftHandle: 0,
       rightHandle: 50
@@ -56,8 +55,8 @@ export default class AnalysisView extends React.Component {
           <DraggableRange
             gridSize={25}
             maxWidth={640}
-            initialLeft={50}
-            initialRight={100}
+            left={this.state.leftHandle}
+            right={this.state.rightHandle}
             onDragEnd={this.onDragEnd}
             onDrag={this.onDrag}
           />}
@@ -85,6 +84,9 @@ export default class AnalysisView extends React.Component {
 
   onDrag = event => {
     // TODO: seek to the time indicated by the drag
+    this.setState({
+      [event.handle + 'Handle']: event.position
+    });
   }
 
   onCommentSubmitClicked = event => {

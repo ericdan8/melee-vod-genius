@@ -18,7 +18,7 @@ export default class CommentListItem extends React.Component {
 
     return (
       <div className='commentListItem'>
-        <Button bsStyle='primary' className='toggleVisibility' onClick={this.toggleVisibility}>
+        <Button bsStyle='default' className='toggleVisibility' onClick={this.toggleVisibility}>
           Toggle visibility
         </Button>
         <Panel collapsible expanded={this.state.visible}>

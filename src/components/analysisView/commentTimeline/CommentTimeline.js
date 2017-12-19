@@ -19,7 +19,8 @@ export default class CommentTimeline extends React.Component {
       <CommentTimelineRow
         onCommentClicked={this.onCommentClicked}
         comments={row}
-        duration={this.duration}/>
+        duration={this.duration}
+        width={this.width - 24}/>
       ) : 'No comments for this video yet :('}
     </div>
   )

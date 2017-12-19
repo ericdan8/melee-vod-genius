@@ -5,43 +5,40 @@ export default class DraggableRange extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      left: props.initialLeft || 0,
-      right: props.initialRight || 50
+      left: props.left || 0,
+      right: props.right || 50
     };
     this.gridSize = props.gridSize || 25;
-    this.maxWidth = props.maxWidth;
+    this.maxWidth = Math.floor(props.maxWidth / this.gridSize) * this.gridSize;
     this.dragData = null;
   }
 
-  roundPosition = position => {
-    var roundedPos = Math.round(position / this.gridSize) * this.gridSize;
-    return Math.max(Math.min(roundedPos, this.maxWidth), 0);
-  }
+  roundPosition = position => Math.round(position / this.gridSize) * this.gridSize;
 
   onDragStartLeft = event => {
     this.dragData = {
       handle: 'left',
-      startX: this.state.left
+      startX: this.roundPosition(event.clientX)
     };
-    if (this.props.onDragStart) {
-      this.props.onDragStart({
-        handle: 'left',
-        startX: this.state.left
-      });
-    }
+    // if (this.props.onDragStart) {
+    //   this.props.onDragStart({
+    //     handle: 'left',
+    //     startX: this.state.left
+    //   });
+    // }
   }
   
   onDragStartRight = event => {
     this.dragData = {
       handle: 'right',
-      startX: this.state.left
+      startX: this.roundPosition(event.clientX)
     };
-    if (this.props.onDragStart) {
-      this.props.onDragStart({
-        handle: 'right',
-        startX: this.state.right
-      });
-    }
+    // if (this.props.onDragStart) {
+    //   this.props.onDragStart({
+    //     handle: 'right',
+    //     startX: this.state.right
+    //   });
+    // }
   }
 
   onDragEnd = event => {
@@ -78,42 +75,36 @@ export default class DraggableRange extends React.Component {
   updatePosition = (drag, callback, forceCallback) => {
     if (drag.handle && drag.position) {
       var roundedPosition = this.roundPosition(drag.position);
-      if (roundedPosition !== this.state[drag.handle]) {
+      var offset = roundedPosition - this.dragData.startX;
+      // if the user has dragged far enough to trigger a positin update
+      if (offset !== 0) {
         // console.log('updating ' + this.dragData.handle + ' with ' + roundedPosition);
-        switch (drag.handle) {
-        case 'left':
-          if (roundedPosition < this.state.right) {
-            this.setState({
-              left: roundedPosition
-            }, callback);
-          }
-          break;
-        case 'right':
-          if (roundedPosition > this.state.left) {
-            this.setState({
-              right: roundedPosition
-            }, callback);
-          }
-          break;
-        default:
-          break;
+        var newPosition = Math.max(Math.min(this.state[drag.handle] + offset, this.maxWidth - 10), 0);
+        if (drag.handle === 'left' && newPosition < this.state.right ||
+            drag.handle === 'right' && newPosition > this.state.left) {
+          this.setState({
+            [drag.handle]: newPosition
+          }, callback);
+          this.dragData.startX = roundedPosition;
         }
       } else if (forceCallback) callback();
     }
   }
 
   render() {
+    let left = this.props.left || this.state.left;
+    let right = this.props.right || this.state.right;
     const leftHandleStyle = {
-      left: this.state.left + 'px',
+      left: left + 'px',
       width: '10px'
     };
     const rightHandleStyle = {
-      left: this.state.right + 'px',
+      left: right + 'px',
       width: '10px'
     };
     const contentStyle = {
-      left: (this.state.left + 10) + 'px',
-      width: (this.state.right - this.state.left) + 'px'
+      left: (left + 10) + 'px',
+      width: (right - left) + 'px'
     };
 
     return (
