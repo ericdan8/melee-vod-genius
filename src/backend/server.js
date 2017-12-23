@@ -66,7 +66,7 @@ app.post('/api/video/:videoId', (req, res, next) => {
     if (err) {
       res.send(err);
     }
-    console.log('created new video ' + req.params.videoId);
+    console.log('updating video ' + req.params.videoId);
 
     var newComment = new Comment(req.body);
 
