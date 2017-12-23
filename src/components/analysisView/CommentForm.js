@@ -7,8 +7,7 @@ export default class CommentForm extends React.Component {
     super(props);
     this.state = {
       message: '',
-      startTime: 0,
-      endTime: 0
+      author: ''
     };
   }
 
@@ -20,8 +19,15 @@ export default class CommentForm extends React.Component {
           <FormControl
             type="text"
             value={this.state.message}
-            placeholder="Enter text"
+            placeholder="Enter message"
             onChange={this.onMessageChange}
+          />
+          <ControlLabel>Author Name</ControlLabel>
+          <FormControl
+            type="text"
+            value={this.state.author}
+            placeholder="Enter author name"
+            onChange={this.onAuthorChange}
           />
         </FormGroup>
         <Button type="submit" onClick={this.onSubmit}>
@@ -36,12 +42,16 @@ export default class CommentForm extends React.Component {
       message: event.target.value
     });
   }
+  
+  onAuthorChange = event => {
+    this.setState({
+      author: event.target.value
+    });
+  }
 
   onSubmit = event => {
     if (this.props.onSubmit) {
-      this.props.onSubmit({
-        message: this.state.message
-      });
+      this.props.onSubmit({ ...this.state });
     }
   }
 }

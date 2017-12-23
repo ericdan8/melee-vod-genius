@@ -23,6 +23,7 @@ export default class AnalysisView extends React.Component {
     };
     this.videoWidth = props.videoWidth || 640;
     this.videoHeight = props.videoHeight || 390;
+    this.videoId = this.props.match.params.videoId;
   }
   
   componentWillMount() {
@@ -37,7 +38,6 @@ export default class AnalysisView extends React.Component {
         autoplay: 0
       }
     };
-    const { videoId } = this.props.match.params;
 
     return (
       <div className='analysisView'>
@@ -46,7 +46,7 @@ export default class AnalysisView extends React.Component {
           <Button className='addCommentButton' bsStyle='default' onClick={this.toggleAddCommentMode}>Add comment</Button>}
           {this.state.videoPlayerVisible && 
           <VideoPlayer
-            videoId={videoId}
+            videoId={this.videoId}
             opts={opts}
             comments={this.state.comments}
             onCommentsChanged={this.onCommentsChanged}
@@ -72,7 +72,7 @@ export default class AnalysisView extends React.Component {
         </div>
         {this.state.addCommentMode &&
         <CommentForm
-          onSubmit={this.onCommentSubmitClicked}
+          onSubmit={this.onCommentSubmitClicked.bind(this)}
         />}
         <CommentList comments={this.state.shownComments}/>
       </div>
@@ -94,7 +94,13 @@ export default class AnalysisView extends React.Component {
   }
 
   onCommentSubmitClicked = event => {
-    //TODO: get the start and end time from the draggable range
+    var { message, author, startTime, endTime } = event;
+    startTime = this._convertPositionToTime(this.state.leftHandle);
+    endTime = this._convertPositionToTime(this.state.rightHandle);
+
+    this.sendComment({
+      message, author, startTime, endTime, score: 0
+    });
   }
 
   toggleAddCommentMode = () => {
@@ -103,10 +109,8 @@ export default class AnalysisView extends React.Component {
     });
   }
 
-  fetchComments = videoId => {
-    const { match } = this.props;
-    
-    this.getCommentsFromId(match.params.videoId)
+  fetchComments = () => {
+    this._getCommentsFromId(this.videoId)
     .then(commentData => {
       this.setState({
         comments: commentData,
@@ -136,12 +140,20 @@ export default class AnalysisView extends React.Component {
     });
   }
   
-  getCommentsFromId = videoId => {
+  _getCommentsFromId = videoId => {
     return new Promise((resolve, reject) => {
       axios.get(API_URL + videoId)
         .then(res => resolve(res.data.comments))
         .catch(err => reject(err));
     });
+  }
+
+  sendComment = commentSpec => {
+    return new Promise((resolve, reject) => {
+      axios.post(API_URL + this.videoId, commentSpec)
+        .then(() => console.log('comment submitted!'))
+        .catch(err => console.log(err));
+    })
   }
 
   _convertPositionToTime = position => this.videoPlayer && (position / (this.videoWidth)) * this.videoPlayer.getDuration();

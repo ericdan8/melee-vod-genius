@@ -29,6 +29,6 @@ export default class CommentTimelineRow extends React.Component {
       left: (comment.startTime / duration) * width
     };
 
-    return <div className='commentRect' onClick={this.onCommentClicked.bind(this, comment)} style={style}>{comment.message}</div>;
+    return <div key={comment._id} className='commentRect' onClick={this.onCommentClicked.bind(this, comment)} style={style}>{comment.message}</div>;
   }
 }
