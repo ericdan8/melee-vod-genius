@@ -67,8 +67,8 @@ app.post('/api/video/:videoId', (req, res, next) => {
       res.send(err);
     }
     console.log('created new video ' + req.params.videoId);
-    var newCommentData = JSON.parse(req.query.newComment);
-    var newComment = new Comment(newCommentData);
+
+    var newComment = new Comment(req.body);
 
     dbUtils.saveDocument(newComment);
 
