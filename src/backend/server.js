@@ -91,7 +91,9 @@ app.post('/api/video/:videoId', (req, res, next) => {
     video.save(function(err, updatedVideo) {
       // do stuff with the updated video
       console.log('new comment added to video ' + req.param.videoId);
-      res.json(updatedVideo);
+      updatedVideo.populate('comments', function(err, vid) {
+        res.json(vid);
+      });
     });
   });
 });

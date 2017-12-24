@@ -53,7 +53,6 @@ export default class AnalysisView extends React.Component {
             onReady={this.onVideoPlayerReady}
             addCommentMode={this.state.addCommentMode}
           />}
-          {this._convertPositionToTime(this.state.leftHandle)}
           {this.state.addCommentMode && 
           <DraggableRange
             gridSize={25}
@@ -98,9 +97,12 @@ export default class AnalysisView extends React.Component {
     startTime = this._convertPositionToTime(this.state.leftHandle);
     endTime = this._convertPositionToTime(this.state.rightHandle);
 
-    this.sendComment({
-      message, author, startTime, endTime, score: 0
-    });
+    this.sendComment({ message, author, startTime, endTime, score: 0 }).then(newComments => {
+      this.setState({
+        comments: newComments,
+        addCommentMode: false
+      });
+    })
   }
 
   toggleAddCommentMode = () => {
@@ -110,8 +112,7 @@ export default class AnalysisView extends React.Component {
   }
 
   fetchComments = () => {
-    this._getCommentsFromId(this.videoId)
-    .then(commentData => {
+    this._getCommentsFromId(this.videoId).then(commentData => {
       this.setState({
         comments: commentData,
         videoPlayerVisible: true
@@ -134,9 +135,9 @@ export default class AnalysisView extends React.Component {
     this.videoPlayer.seekTo(comment.startTime, true);
   }
 
-  onCommentsChanged = newCommments => {
+  onCommentsChanged = newComments => {
     this.setState({
-      shownComments: newCommments
+      shownComments: newComments
     });
   }
   
@@ -151,7 +152,7 @@ export default class AnalysisView extends React.Component {
   sendComment = commentSpec => {
     return new Promise((resolve, reject) => {
       axios.post(API_URL + this.videoId, commentSpec)
-        .then(() => console.log('comment submitted!'))
+        .then(res => { resolve(res.data.comments) })
         .catch(err => console.log(err));
     })
   }
