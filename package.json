@@ -17,6 +17,7 @@
     "global": "^4.3.2",
     "mongoose": "^4.11.13",
     "mysql": "^2.15.0",
+    "node-sass": "^4.7.2",
     "nodemon": "^1.12.1",
     "prop-types": "^15.6.0",
     "react": "^15.6.1",
@@ -37,7 +38,7 @@
     "eject": "react-app-rewired eject",
     "backend": "nodemon --watch src/backend/server.js src/backend/server.js",
     "start-dev": "nf start -p 3000",
-    "heroku-postbuild": "sass --update src/components:src/stylesheets && yarn --production=false && yarn run build"
+    "heroku-postbuild": "node-sass --update src/components:src/stylesheets && yarn --production=false && yarn run build"
   },
   "devDependencies": {
     "babel-plugin-root-import": "^5.1.0"
