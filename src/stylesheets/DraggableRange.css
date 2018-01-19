@@ -1,0 +1,15 @@
+.draggableRange {
+  display: flex;
+  flex-direction: row;
+  height: 30px;
+  position: relative; }
+  .draggableRange .handle {
+    position: absolute;
+    height: 30px;
+    background-color: #AEA8D3; }
+  .draggableRange .content {
+    position: absolute;
+    height: 30px;
+    background-color: #ecf0f1; }
+
+/*# sourceMappingURL=DraggableRange.css.map */

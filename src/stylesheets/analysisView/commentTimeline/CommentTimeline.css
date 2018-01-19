@@ -1,0 +1,8 @@
+.commentsTimeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-left: 12px;
+  margin-right: 12px; }
+
+/*# sourceMappingURL=CommentTimeline.css.map */

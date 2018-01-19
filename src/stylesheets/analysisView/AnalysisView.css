@@ -1,0 +1,13 @@
+.analysisView {
+  display: flex;
+  flex-direction: row; }
+  .analysisView .addCommentButton {
+    margin-bottom: 15px;
+    max-width: 150px;
+    align-self: center; }
+  .analysisView .videoContainer {
+    margin: 25px 50px;
+    display: flex;
+    flex-direction: column; }
+
+/*# sourceMappingURL=AnalysisView.css.map */
