@@ -36,7 +36,7 @@
     "eject": "react-app-rewired eject",
     "backend": "nodemon --watch src/backend/server.js src/backend/server.js",
     "start-dev": "nf start -p 3000",
-    "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
+    "heroku-postbuild": "yarn --production=false && yarn run build"
   },
   "devDependencies": {
     "babel-plugin-root-import": "^5.1.0"
