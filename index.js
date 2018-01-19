@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
+var path = require('path');
 require('dotenv').config();
 
 var app = express();
@@ -30,6 +31,15 @@ var con = mysql.createConnection({
 con.connect(err => {
   if (err) throw err;
   else console.log('Connected to database!');
+});
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
 app.get('/api/video/:videoId', (req, res, next) => {
