@@ -1,5 +1,6 @@
 {
   "name": "melee-vod-genius",
+  "homepage": "http://ericdan.me",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

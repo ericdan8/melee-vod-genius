@@ -97,12 +97,7 @@ export default class AnalysisView extends React.Component {
     startTime = this._convertPositionToTime(this.state.leftHandle);
     endTime = this._convertPositionToTime(this.state.rightHandle);
 
-    this.sendComment({ message, author, startTime, endTime, score: 0 }).then(newComments => {
-      this.setState({
-        comments: newComments,
-        addCommentMode: false
-      });
-    })
+    this.sendComment({ message, author, startTime, endTime, score: 0 }).then(this.fetchComments);
   }
 
   toggleAddCommentMode = () => {
@@ -152,7 +147,7 @@ export default class AnalysisView extends React.Component {
   sendComment = commentSpec => {
     return new Promise((resolve, reject) => {
       axios.post(API_URL + this.videoId, commentSpec)
-        .then(res => { resolve(res.data.comments) })
+        .then(resolve)
         .catch(err => console.log(err));
     })
   }

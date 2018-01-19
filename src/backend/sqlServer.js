@@ -27,28 +27,50 @@ var con = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
-con.connect(function(err) {
+con.connect(err => {
   if (err) throw err;
-  console.log('Connected!');
-  console.log('using VOD genius');
-  con.query('SELECT * FROM comments', function (err, result) {
-    if (err) throw err;
-  });
+  else console.log('Connected to database!');
 });
 
 app.get('/api/video/:videoId', (req, res, next) => {
   if (req.params.videoId) {
+    console.log('serving video ' + req.params.videoId);
     var sql = `
       SELECT message, startTime, endTime, author, score
       FROM video_comment_map
       JOIN comments
         ON comments.id = video_comment_map.commentId
-      WHERE videoId = \"${req.params.videoId}\"
+      WHERE videoId = \"${req.params.videoId}\";
     `
     con.query(sql, (err, result) => {
-      // TODO: do stuff with the result here
+      if (err) res.send(err);
+      else res.json({ comments: result });
     });
-    res.json(sql);
+  }
+});
+
+app.post('/api/video/:videoId', (req, res, next) => {
+  if (req.params.videoId) {
+    console.log('adding comment to video ' + req.params.videoId);
+    var { message, startTime, endTime, author } = req.body;
+    var commentSql = `
+      INSERT INTO comments (message, startTime, endTime, author)
+      VALUES (\"${message}\", ${startTime}, ${endTime}, \"${author}\");
+    `
+    // add the new comment
+    con.query(commentSql, (err, result) => {
+      if (err) res.send(err);
+      var { insertId } = result;
+      var mapSql = `
+        INSERT INTO video_comment_map (videoId, commentId)
+        VALUES (\"${req.params.videoId}\", ${insertId});
+      `
+      // map the new comment to the given video
+      con.query(mapSql, (err, result) => {
+        if (err) res.send(err);
+        else res.json(result);
+      });
+    });
   }
 });
 
