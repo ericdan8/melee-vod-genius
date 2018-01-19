@@ -5,6 +5,10 @@
   "repository": "https://github.com/ericdan8/melee-vod-genius.git",
   "author": "Eric Dan <eric.dan8@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
+  },
   "dependencies": {
     "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
